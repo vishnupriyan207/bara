@@ -1,0 +1,5217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#171B2E" />
+    <meta
+      name="description"
+      content="Nalam Clinic - Excellence in Care. Doctor, Patient & Pharmacy Portal."
+    />
+    <title>Nalam Clinic v2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ── Nalam Clinic (first) styles ── */
+      :root {
+        --ink: #171b2e;
+        --sub: #8791aa;
+        --orange-2: #f2603a;
+        --purple-2: #8b5cf6;
+        --cyan-2: #22b8cf;
+        --card-border: rgba(255, 255, 255, 0.65);
+        --glass-bg: rgba(255, 255, 255, 0.42);
+        --shadow-soft: 0 8px 32px rgba(60, 70, 110, 0.12);
+        --shadow-glow-orange: 0 0 40px rgba(242, 96, 58, 0.15);
+        --shadow-glow-purple: 0 0 40px rgba(139, 92, 246, 0.15);
+        --shadow-glow-cyan: 0 0 40px rgba(34, 184, 207, 0.15);
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family:
+          "Poppins",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--ink);
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+        position: relative;
+        background: #eef2fb;
+      }
+
+      /* ========== BACKGROUND SYSTEM (Nalam) ========== */
+      #bgLayer {
+        position: fixed;
+        inset: -60px;
+        z-index: -3;
+        background:
+          radial-gradient(circle at 15% 10%, #dff1ff 0%, transparent 50%),
+          radial-gradient(circle at 85% 5%, #fdf2e2 0%, transparent 45%),
+          radial-gradient(circle at 10% 90%, #e7e0ff 0%, transparent 50%),
+          radial-gradient(circle at 90% 85%, #ffe3ec 0%, transparent 50%),
+          radial-gradient(circle at 50% 50%, #f0f4ff 0%, transparent 60%),
+          linear-gradient(
+            160deg,
+            #eef4ff 0%,
+            #fdf3ec 40%,
+            #eafaf3 80%,
+            #f5f0ff 100%
+          );
+        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        will-change: transform;
+      }
+
+      /* Animated gradient mesh blobs */
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(60px);
+        z-index: -3;
+        opacity: 0.55;
+        animation: blobFloat 20s ease-in-out infinite;
+      }
+      .blob-1 {
+        width: 400px;
+        height: 400px;
+        background: linear-gradient(135deg, #ffd6c2, #ffaa88);
+        top: -10%;
+        left: -10%;
+        animation-delay: 0s;
+      }
+      .blob-2 {
+        width: 350px;
+        height: 350px;
+        background: linear-gradient(135deg, #d4c2ff, #a88cff);
+        top: 60%;
+        right: -15%;
+        animation-delay: -7s;
+      }
+      .blob-3 {
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, #b8e8ff, #88d4f0);
+        bottom: -5%;
+        left: 20%;
+        animation-delay: -14s;
+      }
+
+      @keyframes blobFloat {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        33% {
+          transform: translate(30px, -30px) scale(1.05);
+        }
+        66% {
+          transform: translate(-20px, 20px) scale(0.95);
+        }
+      }
+
+      /* Subtle noise texture overlay */
+      #noiseOverlay {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.025;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 256px 256px;
+      }
+
+      /* Orb layer */
+      #orbLayer {
+        position: fixed;
+        inset: -80px;
+        z-index: -2;
+        pointer-events: none;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        will-change: transform;
+      }
+
+      /* Floating particles */
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.7);
+        pointer-events: none;
+        animation: particleFloat linear infinite;
+      }
+      @keyframes particleFloat {
+        0% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100vh) translateX(20px);
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .blob,
+        .deco-ring,
+        .particle,
+        .orb {
+          animation: none !important;
+        }
+      }
+
+      /* ========== INNER CONTENT BOX ========== */
+      .inner-box {
+        width: 100%;
+        padding: 34px 24px 30px;
+        border-radius: 34px;
+        border: 1.5px solid rgba(255, 255, 255, 0.72);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(18px) saturate(1.15);
+        -webkit-backdrop-filter: blur(18px) saturate(1.15);
+        box-shadow:
+          0 10px 34px rgba(60, 70, 110, 0.08),
+          inset 0 1px 2px rgba(255, 255, 255, 0.75);
+      }
+
+      /* ========== LAYOUT ========== */
+      .screen {
+        max-width: 460px;
+        margin: 0 auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 52px 24px 36px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Logo / Icon */
+      .icon-wrap {
+        width: 110px;
+        height: 110px;
+        border-radius: 30px;
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.85),
+          rgba(255, 220, 190, 0.45)
+        );
+        border: 1.5px solid rgba(255, 255, 255, 0.85);
+        box-shadow:
+          0 16px 40px rgba(242, 96, 58, 0.2),
+          0 4px 12px rgba(242, 96, 58, 0.1),
+          inset 0 2px 4px rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 28px;
+        position: relative;
+        animation: pop-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .icon-wrap::before {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        border-radius: 34px;
+        background: linear-gradient(
+          145deg,
+          rgba(242, 96, 58, 0.2),
+          rgba(139, 92, 246, 0.15),
+          rgba(34, 184, 207, 0.15)
+        );
+        z-index: -1;
+        filter: blur(12px);
+        opacity: 0.6;
+      }
+      .icon-wrap:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow:
+          0 20px 50px rgba(242, 96, 58, 0.25),
+          0 6px 16px rgba(242, 96, 58, 0.12),
+          inset 0 2px 4px rgba(255, 255, 255, 0.9);
+      }
+      .icon-wrap svg {
+        width: 52px;
+        height: 52px;
+      }
+
+      @keyframes pop-in {
+        0% {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Typography */
+      h1 {
+        font-size: 2.3rem;
+        font-weight: 800;
+        margin: 0 0 8px;
+        letter-spacing: -0.6px;
+        text-align: center;
+        background: linear-gradient(135deg, var(--ink) 0%, #3d4466 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: fade-up 0.7s 0.1s both cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .tagline {
+        color: var(--sub);
+        font-size: 0.75rem;
+        letter-spacing: 3.5px;
+        font-weight: 600;
+        margin: 0 0 40px;
+        text-align: center;
+        text-transform: uppercase;
+        animation: fade-up 0.7s 0.2s both cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ========== CARDS ========== */
+      .cards {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .card {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        width: 100%;
+        padding: 18px 20px;
+        border-radius: 24px;
+        border: 1.5px solid var(--card-border);
+        backdrop-filter: blur(24px) saturate(1.4);
+        -webkit-backdrop-filter: blur(24px) saturate(1.4);
+        background: var(--glass-bg);
+        box-shadow:
+          var(--shadow-soft),
+          inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+        appearance: none;
+        -webkit-appearance: none;
+        transition:
+          transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+          box-shadow 0.4s ease,
+          background 0.3s ease;
+        color: inherit;
+        overflow: hidden;
+        animation: fade-up 0.7s both cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .card:nth-child(1) {
+        animation-delay: 0.35s;
+      }
+      .card:nth-child(2) {
+        animation-delay: 0.45s;
+      }
+      .card:nth-child(3) {
+        animation-delay: 0.55s;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 24px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+      }
+
+      .card.doctor::before {
+        background: radial-gradient(
+          circle at 80% 50%,
+          rgba(242, 96, 58, 0.08) 0%,
+          transparent 70%
+        );
+      }
+      .card.patient::before {
+        background: radial-gradient(
+          circle at 80% 50%,
+          rgba(139, 92, 246, 0.08) 0%,
+          transparent 70%
+        );
+      }
+      .card.pharmacy::before {
+        background: radial-gradient(
+          circle at 80% 50%,
+          rgba(34, 184, 207, 0.08) 0%,
+          transparent 70%
+        );
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card:hover {
+        transform: translateY(-3px) scale(1.01);
+      }
+      .card.doctor:hover {
+        box-shadow:
+          var(--shadow-soft),
+          var(--shadow-glow-orange),
+          inset 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+      .card.patient:hover {
+        box-shadow:
+          var(--shadow-soft),
+          var(--shadow-glow-purple),
+          inset 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+      .card.pharmacy:hover {
+        box-shadow:
+          var(--shadow-soft),
+          var(--shadow-glow-cyan),
+          inset 0 1px 2px rgba(255, 255, 255, 0.8);
+      }
+
+      .card:active {
+        transform: scale(0.97) translateY(0);
+        transition-duration: 0.1s;
+      }
+      .card:focus-visible {
+        outline: 3px solid var(--ink);
+        outline-offset: 4px;
+      }
+
+      /* Ripple effect container */
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: rippleEffect 0.6s linear;
+        pointer-events: none;
+        opacity: 0.3;
+      }
+      @keyframes rippleEffect {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      .card.doctor {
+        background: linear-gradient(
+          120deg,
+          rgba(255, 214, 193, 0.5),
+          rgba(255, 255, 255, 0.45)
+        );
+      }
+      .card.patient {
+        background: linear-gradient(
+          120deg,
+          rgba(224, 210, 255, 0.5),
+          rgba(255, 255, 255, 0.45)
+        );
+      }
+      .card.pharmacy {
+        background: linear-gradient(
+          120deg,
+          rgba(190, 240, 250, 0.55),
+          rgba(255, 255, 255, 0.45)
+        );
+      }
+
+      .card-icon {
+        width: 54px;
+        height: 54px;
+        min-width: 54px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+          inset 0 1px 3px rgba(255, 255, 255, 0.95),
+          0 3px 10px rgba(0, 0, 0, 0.06);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+      .card:hover .card-icon {
+        transform: scale(1.1) rotate(-3deg);
+        box-shadow:
+          inset 0 1px 3px rgba(255, 255, 255, 0.95),
+          0 6px 16px rgba(0, 0, 0, 0.08);
+      }
+
+      .card-icon svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      .card-text {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .card-label {
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+      }
+
+      .card-desc {
+        font-size: 0.72rem;
+        color: var(--sub);
+        font-weight: 500;
+        opacity: 0.85;
+      }
+
+      .card-arrow {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        transition:
+          transform 0.3s ease,
+          background 0.3s ease;
+      }
+      .card:hover .card-arrow {
+        transform: translateX(4px);
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .card-arrow svg {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s ease;
+      }
+      .card:hover .card-arrow svg {
+        transform: translateX(2px);
+      }
+
+      .doctor .card-arrow svg {
+        stroke: var(--orange-2);
+      }
+      .patient .card-arrow svg {
+        stroke: var(--purple-2);
+      }
+      .pharmacy .card-arrow svg {
+        stroke: var(--cyan-2);
+      }
+
+      /* Footer */
+      footer {
+        margin-top: auto;
+        padding-top: 36px;
+        font-size: 0.68rem;
+        color: var(--sub);
+        text-align: center;
+        font-weight: 500;
+        opacity: 0.8;
+        animation: fade-up 0.7s 0.7s both;
+      }
+
+      footer .heart {
+        display: inline-block;
+        color: var(--orange-2);
+        animation: heartbeat 2s ease-in-out infinite;
+      }
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        14% {
+          transform: scale(1.15);
+        }
+        28% {
+          transform: scale(1);
+        }
+        42% {
+          transform: scale(1.15);
+        }
+        70% {
+          transform: scale(1);
+        }
+      }
+
+      /* ========== RESPONSIVE (Nalam) ========== */
+      @media (max-width: 380px) {
+        .inner-box {
+          padding: 30px 18px 26px;
+          border-radius: 30px;
+        }
+        h1 {
+          font-size: 2rem;
+        }
+        .card-label {
+          font-size: 1.05rem;
+        }
+        .icon-wrap {
+          width: 95px;
+          height: 95px;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .screen {
+          max-width: 480px;
+          padding-top: 64px;
+        }
+        h1 {
+          font-size: 2.5rem;
+        }
+      }
+
+      /* ── Splash (CARE+) – second page, initially hidden ── */
+      .splash-page {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100dvh;
+        min-height: 568px;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        isolation: isolate;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+        background:
+          radial-gradient(
+            ellipse at 20% 30%,
+            rgba(0, 180, 216, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 70%,
+            rgba(255, 107, 107, 0.12) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(199, 125, 255, 0.08) 0%,
+            transparent 60%
+          ),
+          linear-gradient(
+            135deg,
+            #e0f7fa 0%,
+            #f3e5f5 25%,
+            #fff3e0 50%,
+            #e8f5e9 75%,
+            #e0f2f1 100%
+          );
+        background-size: 200% 200%;
+        animation: bgShift 15s ease infinite;
+        transition:
+          opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .splash-page.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .splash-page.exit {
+        opacity: 0;
+        transform: scale(1.08);
+        pointer-events: none;
+      }
+
+      @keyframes bgShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      /* ── animated mesh gradient overlay ── */
+      .mesh-gradient {
+        position: absolute;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.6;
+        background:
+          radial-gradient(
+            circle at 30% 30%,
+            rgba(0, 180, 216, 0.4) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 70% 60%,
+            rgba(255, 107, 107, 0.3) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 50% 80%,
+            rgba(199, 125, 255, 0.25) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(144, 224, 239, 0.35) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 20% 70%,
+            rgba(255, 209, 102, 0.2) 0%,
+            transparent 40%
+          );
+        animation: meshFloat 20s ease-in-out infinite;
+        filter: blur(60px);
+      }
+
+      @keyframes meshFloat {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(-2%, 2%) rotate(1deg);
+        }
+        50% {
+          transform: translate(2%, -1%) rotate(-1deg);
+        }
+        75% {
+          transform: translate(-1%, -2%) rotate(0.5deg);
+        }
+      }
+
+      /* ── floating orbs – premium glass orbs ── */
+      .orb-splash {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 1;
+        will-change: transform;
+      }
+
+      .orb-1s {
+        width: 400px;
+        height: 400px;
+        top: -150px;
+        left: -120px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(0, 180, 216, 0.6),
+          rgba(0, 119, 182, 0.2) 50%,
+          transparent 70%
+        );
+        filter: blur(40px);
+        animation: orbFloat1 18s ease-in-out infinite alternate;
+      }
+      .orb-2s {
+        width: 450px;
+        height: 450px;
+        bottom: -180px;
+        right: -150px;
+        background: radial-gradient(
+          circle at 40% 40%,
+          rgba(255, 107, 107, 0.5),
+          rgba(255, 158, 158, 0.15) 50%,
+          transparent 70%
+        );
+        filter: blur(50px);
+        animation: orbFloat2 22s ease-in-out infinite alternate;
+      }
+      .orb-3s {
+        width: 300px;
+        height: 300px;
+        top: 20%;
+        right: -100px;
+        background: radial-gradient(
+          circle at 35% 35%,
+          rgba(199, 125, 255, 0.5),
+          rgba(224, 170, 255, 0.15) 50%,
+          transparent 70%
+        );
+        filter: blur(45px);
+        animation: orbFloat3 20s ease-in-out infinite alternate;
+      }
+      .orb-4s {
+        width: 280px;
+        height: 280px;
+        bottom: 15%;
+        left: -90px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(144, 224, 239, 0.5),
+          rgba(0, 180, 216, 0.15) 50%,
+          transparent 70%
+        );
+        filter: blur(40px);
+        animation: orbFloat4 16s ease-in-out infinite alternate;
+      }
+      .orb-5s {
+        width: 220px;
+        height: 220px;
+        top: 60%;
+        left: 20%;
+        background: radial-gradient(
+          circle at 40% 40%,
+          rgba(255, 209, 102, 0.35),
+          rgba(255, 183, 77, 0.1) 50%,
+          transparent 70%
+        );
+        filter: blur(50px);
+        animation: orbFloat1 24s ease-in-out infinite alternate;
+      }
+      .orb-6s {
+        width: 260px;
+        height: 260px;
+        top: 5%;
+        left: 55%;
+        background: radial-gradient(
+          circle at 35% 35%,
+          rgba(0, 180, 216, 0.4),
+          rgba(144, 224, 239, 0.1) 50%,
+          transparent 70%
+        );
+        filter: blur(45px);
+        animation: orbFloat4 19s ease-in-out infinite alternate;
+      }
+      .orb-7s {
+        width: 180px;
+        height: 180px;
+        bottom: 35%;
+        right: 25%;
+        background: radial-gradient(
+          circle at 40% 40%,
+          rgba(255, 107, 107, 0.3),
+          transparent 70%
+        );
+        filter: blur(35px);
+        animation: orbFloat2 21s ease-in-out infinite alternate;
+      }
+
+      @keyframes orbFloat1 {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(60px, 50px) scale(1.3);
+        }
+      }
+      @keyframes orbFloat2 {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(-70px, -60px) scale(1.4);
+        }
+      }
+      @keyframes orbFloat3 {
+        0% {
+          transform: translate(0, 0) rotate(0deg) scale(1);
+        }
+        100% {
+          transform: translate(-50px, 70px) rotate(15deg) scale(1.25);
+        }
+      }
+      @keyframes orbFloat4 {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(50px, -50px) scale(1.35);
+        }
+      }
+
+      /* ── constellation canvas ── */
+      #constellation {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ── expanding tech rings ── */
+      .rings-splash {
+        position: absolute;
+        left: 50%;
+        top: 42%;
+        width: 1px;
+        height: 1px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .ring-splash {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 140px;
+        height: 140px;
+        margin-left: -70px;
+        margin-top: -70px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0.1);
+        opacity: 0;
+        animation: ringExpand 7s ease-out infinite;
+        box-shadow:
+          0 0 20px rgba(0, 180, 216, 0.2),
+          inset 0 0 20px rgba(0, 180, 216, 0.1);
+      }
+      .ring-splash:nth-child(2) {
+        animation-delay: 1.5s;
+        border-color: rgba(255, 107, 107, 0.25);
+        box-shadow:
+          0 0 20px rgba(255, 107, 107, 0.15),
+          inset 0 0 20px rgba(255, 107, 107, 0.08);
+      }
+      .ring-splash:nth-child(3) {
+        animation-delay: 3s;
+        border-color: rgba(199, 125, 255, 0.2);
+        box-shadow:
+          0 0 20px rgba(199, 125, 255, 0.15),
+          inset 0 0 20px rgba(199, 125, 255, 0.08);
+      }
+      .ring-splash:nth-child(4) {
+        animation-delay: 4.5s;
+        border-color: rgba(144, 224, 239, 0.2);
+        box-shadow:
+          0 0 20px rgba(144, 224, 239, 0.15),
+          inset 0 0 20px rgba(144, 224, 239, 0.08);
+      }
+      .ring-splash:nth-child(5) {
+        animation-delay: 5.5s;
+        border-color: rgba(255, 209, 102, 0.15);
+        box-shadow:
+          0 0 20px rgba(255, 209, 102, 0.1),
+          inset 0 0 20px rgba(255, 209, 102, 0.05);
+      }
+
+      @keyframes ringExpand {
+        0% {
+          transform: scale(0.1);
+          opacity: 0;
+        }
+        15% {
+          opacity: 0.7;
+        }
+        60% {
+          opacity: 0.25;
+        }
+        100% {
+          transform: scale(7);
+          opacity: 0;
+        }
+      }
+
+      /* ── ambient glow ── */
+      .ambient-glow-splash {
+        position: absolute;
+        width: min(90vw, 420px);
+        height: min(90vw, 420px);
+        left: 50%;
+        top: 42%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(200, 245, 250, 0.5) 25%,
+          rgba(144, 224, 239, 0.2) 50%,
+          transparent 75%
+        );
+        filter: blur(20px);
+        z-index: 0;
+        animation: ambientPulse 6s ease-in-out infinite;
+      }
+
+      @keyframes ambientPulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(0.85);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.3);
+          opacity: 0.9;
+        }
+      }
+
+      /* ── medical symbols ── */
+      .med-symbol {
+        position: absolute;
+        pointer-events: none;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.5);
+        z-index: 2;
+        animation: symbolDrift 12s ease-in-out infinite alternate;
+        text-shadow:
+          0 0 30px rgba(255, 255, 255, 0.4),
+          0 0 60px rgba(0, 180, 216, 0.2);
+        font-size: clamp(18px, 4vw, 28px);
+      }
+      .symbol-1s {
+        top: 8%;
+        left: 6%;
+        animation-delay: 0s;
+      }
+      .symbol-2s {
+        top: 18%;
+        right: 7%;
+        animation-delay: 1.2s;
+        font-size: clamp(14px, 3vw, 20px);
+      }
+      .symbol-3s {
+        bottom: 15%;
+        left: 8%;
+        animation-delay: 2.4s;
+        font-size: clamp(16px, 3.5vw, 22px);
+      }
+      .symbol-4s {
+        bottom: 22%;
+        right: 6%;
+        animation-delay: 0.8s;
+      }
+      .symbol-5s {
+        top: 45%;
+        left: 3%;
+        animation-delay: 1.8s;
+        font-size: clamp(12px, 2.5vw, 16px);
+      }
+      .symbol-6s {
+        top: 55%;
+        right: 4%;
+        animation-delay: 3s;
+        font-size: clamp(14px, 3vw, 18px);
+      }
+      .symbol-7s {
+        top: 12%;
+        left: 40%;
+        animation-delay: 2s;
+        font-size: clamp(10px, 2vw, 14px);
+      }
+      .symbol-8s {
+        bottom: 8%;
+        right: 35%;
+        animation-delay: 1.5s;
+        font-size: clamp(12px, 2.5vw, 16px);
+      }
+
+      @keyframes symbolDrift {
+        0% {
+          transform: translate3d(0, 0, 0) rotate(-10deg);
+          opacity: 0.2;
+        }
+        100% {
+          transform: translate3d(25px, -30px, 0) rotate(12deg);
+          opacity: 0.6;
+        }
+      }
+
+      /* ── splash content ── */
+      .content-splash {
+        position: relative;
+        width: 100%;
+        max-width: 460px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 30px max(24px, 6vw);
+        z-index: 10;
+      }
+      .logo-area-splash {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      }
+      .logo-mark-splash {
+        position: relative;
+        width: clamp(100px, 28vw, 130px);
+        height: clamp(100px, 28vw, 130px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: scale(0.05) rotate(-15deg);
+        animation: heartEntrance 1.2s cubic-bezier(0.17, 0.89, 0.32, 1.28) 0.3s
+          forwards;
+        transition: transform 0.3s ease;
+      }
+      .logo-mark-splash:hover {
+        transform: scale(1.05) rotate(2deg);
+      }
+
+      @keyframes heartEntrance {
+        0% {
+          opacity: 0;
+          transform: scale(0.05) rotate(-15deg);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.15) rotate(5deg);
+        }
+        75% {
+          transform: scale(0.95) rotate(-2deg);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      .logo-glow-splash {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.6),
+          rgba(0, 180, 216, 0.3) 40%,
+          rgba(199, 125, 255, 0.1) 70%,
+          transparent 85%
+        );
+        filter: blur(20px);
+        animation: logoBreath 3s ease-in-out 1.5s infinite;
+      }
+
+      @keyframes logoBreath {
+        0%,
+        100% {
+          transform: scale(0.9);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.4);
+          opacity: 1;
+        }
+      }
+
+      .heart-svg-splash {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        filter: drop-shadow(0 12px 40px rgba(0, 119, 182, 0.25));
+      }
+      .heart-shape-splash {
+        fill: none;
+        stroke: url(#heartGradient);
+        stroke-width: 7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 500;
+        stroke-dashoffset: 500;
+        animation: drawHeart 1s cubic-bezier(0.65, 0, 0.35, 1) 0.4s forwards;
+      }
+      @keyframes drawHeart {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .inner-heart-splash {
+        fill: none;
+        stroke: rgba(0, 180, 216, 0.5);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        opacity: 0;
+        animation: innerHeartAppear 0.8s ease 1s forwards;
+      }
+      @keyframes innerHeartAppear {
+        to {
+          opacity: 1;
+        }
+      }
+
+      .plus-splash {
+        position: absolute;
+        right: -6px;
+        top: -2px;
+        width: clamp(36px, 9vw, 44px);
+        height: clamp(36px, 9vw, 44px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+        box-shadow:
+          0 10px 30px rgba(0, 119, 182, 0.25),
+          0 0 0 3px rgba(255, 255, 255, 0.9),
+          0 0 20px rgba(0, 180, 216, 0.3);
+        color: #0077b6;
+        font-size: clamp(26px, 7vw, 32px);
+        font-weight: 800;
+        line-height: 1;
+        opacity: 0;
+        transform: scale(0.1) rotate(-45deg);
+        animation:
+          plusEntrance 0.9s cubic-bezier(0.17, 0.89, 0.32, 1.28) 0.9s forwards,
+          plusPulse 3s ease-in-out 2.2s infinite;
+      }
+      @keyframes plusEntrance {
+        0% {
+          opacity: 0;
+          transform: scale(0.1) rotate(-45deg);
+        }
+        70% {
+          opacity: 1;
+          transform: scale(1.15) rotate(5deg);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+      @keyframes plusPulse {
+        0%,
+        100% {
+          box-shadow:
+            0 10px 30px rgba(0, 119, 182, 0.25),
+            0 0 0 3px rgba(255, 255, 255, 0.9),
+            0 0 20px rgba(0, 180, 216, 0.3);
+        }
+        50% {
+          box-shadow:
+            0 10px 40px rgba(0, 119, 182, 0.4),
+            0 0 0 3px rgba(255, 255, 255, 0.9),
+            0 0 30px rgba(0, 180, 216, 0.5);
+        }
+      }
+
+      .wordmark-splash {
+        margin-top: clamp(18px, 4.5vw, 24px);
+        font-size: clamp(48px, 12vw, 58px);
+        line-height: 1;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: #0a4d6e;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateY(20px) scale(0.92);
+        animation: wordmarkReveal 1.1s cubic-bezier(0.22, 0.61, 0.36, 1) 1.2s
+          forwards;
+        text-shadow: 0 4px 20px rgba(255, 255, 255, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      .wordmark-splash::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.6),
+          transparent
+        );
+        animation: shimmerText 3s ease-in-out 2.5s infinite;
+      }
+      @keyframes shimmerText {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 200%;
+        }
+      }
+      @keyframes wordmarkReveal {
+        0% {
+          opacity: 0;
+          transform: translateY(20px) scale(0.92);
+          letter-spacing: 0.25em;
+        }
+        70% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          letter-spacing: 0.02em;
+        }
+      }
+      .brand-special-splash {
+        position: relative;
+        display: inline-block;
+        top: -0.1em;
+        margin-left: 0.02em;
+        font-size: 0.65em;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #0077b6, #00b4d8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .tagline-splash {
+        margin-top: clamp(16px, 3.5vw, 20px);
+        width: 100%;
+        white-space: nowrap;
+        font-size: clamp(10px, 2.6vw, 13px);
+        line-height: 1.4;
+        letter-spacing: 0.22em;
+        font-weight: 500;
+        color: rgba(10, 77, 110, 0.7);
+        opacity: 0;
+        transform: translateY(14px);
+        animation: taglineReveal 1s cubic-bezier(0.22, 0.61, 0.36, 1) 1.6s
+          forwards;
+        text-shadow: 0 2px 12px rgba(255, 255, 255, 0.5);
+      }
+      @keyframes taglineReveal {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .glass-card-splash {
+        margin-top: clamp(36px, 8vw, 48px);
+        width: min(80vw, 340px);
+        padding: clamp(20px, 5vw, 28px);
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px) saturate(1.5);
+        -webkit-backdrop-filter: blur(20px) saturate(1.5);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 24px;
+        box-shadow:
+          0 8px 32px rgba(0, 77, 110, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: cardReveal 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) 1.8s
+          forwards;
+      }
+      @keyframes cardReveal {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loading-area-splash {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+      .progress-track-splash {
+        position: relative;
+        width: 100%;
+        height: clamp(7px, 2vw, 9px);
+        overflow: hidden;
+        border-radius: 100px;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(4px);
+        box-shadow:
+          inset 0 1px 4px rgba(0, 0, 0, 0.05),
+          0 1px 0 rgba(255, 255, 255, 0.5);
+      }
+      .progress-bar-splash {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(
+          90deg,
+          #0077b6,
+          #00b4d8,
+          #90e0ef,
+          #00b4d8,
+          #0077b6
+        );
+        background-size: 400% 100%;
+        box-shadow:
+          0 2px 20px rgba(0, 119, 182, 0.4),
+          0 0 10px rgba(0, 180, 216, 0.3);
+        will-change: width;
+        animation:
+          progressAnimation 4.5s cubic-bezier(0.15, 0.65, 0.25, 1) 2s forwards,
+          shimmerBar 2.5s linear infinite;
+      }
+      @keyframes progressAnimation {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 100%;
+        }
+      }
+      @keyframes shimmerBar {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 400% 0%;
+        }
+      }
+
+      .loading-message-splash {
+        margin-top: 16px;
+        font-size: clamp(12px, 3vw, 14px);
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        color: rgba(10, 77, 110, 0.65);
+        opacity: 0;
+        animation: messageReveal 0.7s ease 2.2s forwards;
+        text-shadow: 0 1px 8px rgba(255, 255, 255, 0.5);
+      }
+      .loading-dots-splash::after {
+        content: "";
+        animation: dots 1.5s steps(4, end) infinite;
+      }
+      @keyframes dots {
+        0% {
+          content: "";
+        }
+        25% {
+          content: ".";
+        }
+        50% {
+          content: "..";
+        }
+        75% {
+          content: "...";
+        }
+        100% {
+          content: "";
+        }
+      }
+      @keyframes messageReveal {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 0.85;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-height: 650px) {
+        .logo-mark-splash {
+          width: 80px;
+          height: 80px;
+        }
+        .wordmark-splash {
+          margin-top: 12px;
+          font-size: 36px;
+        }
+        .tagline-splash {
+          margin-top: 10px;
+          font-size: 8px;
+        }
+        .glass-card-splash {
+          margin-top: 28px;
+          padding: 16px;
+        }
+        .loading-message-splash {
+          margin-top: 10px;
+        }
+      }
+      @media (min-height: 850px) {
+        .glass-card-splash {
+          margin-top: 56px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Hide Nalam initially until splash exits */
+      .nalam-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+      .nalam-visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* ========== DOCTOR & PATIENT VIEWS (merged from original) ========== */
+      .app-view {
+        max-width: 460px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+        animation: fade-up 0.5s both;
+      }
+      .view-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+      .view-header h2 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, var(--ink) 0%, #3d4466 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .back-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: var(--glass-bg);
+        border: 1.5px solid var(--card-border);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--ink);
+      }
+      .back-btn:hover {
+        transform: scale(1.05);
+      }
+      .back-btn:active {
+        transform: scale(0.95);
+      }
+      .glass-input {
+        width: 100%;
+        padding: 16px 18px;
+        border-radius: 18px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(12px);
+        font-family: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        outline: none;
+        transition: all 0.3s ease;
+        margin-bottom: 14px;
+      }
+      .glass-input:focus {
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 0 3px rgba(242, 96, 58, 0.1);
+        border-color: rgba(242, 96, 58, 0.3);
+      }
+      .glass-input::placeholder {
+        color: var(--sub);
+        opacity: 0.7;
+      }
+      .glass-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238791AA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 18px;
+      }
+      textarea.glass-input {
+        resize: none;
+        min-height: 100px;
+      }
+      .glass-btn {
+        width: 100%;
+        padding: 16px;
+        border-radius: 18px;
+        border: none;
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+      .glass-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .glass-btn:hover::before {
+        opacity: 1;
+      }
+      .glass-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+      .glass-btn:active {
+        transform: scale(0.97);
+      }
+      .btn-orange {
+        background: linear-gradient(135deg, #f2603a, #ff8a65);
+        box-shadow: 0 4px 16px rgba(242, 96, 58, 0.3);
+      }
+      .btn-purple {
+        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+      }
+      .btn-cyan {
+        background: linear-gradient(135deg, #22b8cf, #67e8f9);
+        box-shadow: 0 4px 16px rgba(34, 184, 207, 0.3);
+      }
+      .btn-dark {
+        background: linear-gradient(135deg, #171b2e, #3d4466);
+        box-shadow: 0 4px 16px rgba(23, 27, 46, 0.3);
+      }
+      .btn-green {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+      }
+      .btn-red {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+      }
+      .btn-whatsapp {
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+      }
+      .glass-panel {
+        border-radius: 24px;
+        border: 1.5px solid var(--card-border);
+        background: var(--glass-bg);
+        backdrop-filter: blur(24px) saturate(1.4);
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-soft);
+      }
+      .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .section-title svg {
+        width: 20px;
+        height: 20px;
+      }
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #f2603a, #ff8a65);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 12px rgba(242, 96, 58, 0.25);
+      }
+      .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .stat-card {
+        border-radius: 20px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.35);
+        backdrop-filter: blur(12px);
+        padding: 16px;
+        text-align: center;
+      }
+      .stat-value {
+        font-size: 1.6rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--ink), #3d4466);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .stat-label {
+        font-size: 0.65rem;
+        color: var(--sub);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 4px;
+      }
+      .patient-chip {
+        min-width: 120px;
+        padding: 14px;
+        border-radius: 20px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(12px);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .patient-chip:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .patient-chip .initials {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px;
+        font-weight: 800;
+        font-size: 0.9rem;
+        color: white;
+      }
+      .chip-orange {
+        background: linear-gradient(135deg, #f2603a, #ff8a65);
+      }
+      .chip-purple {
+        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+      }
+      .chip-cyan {
+        background: linear-gradient(135deg, #22b8cf, #67e8f9);
+      }
+      .chip-green {
+        background: linear-gradient(135deg, #10b981, #34d399);
+      }
+      .appointment-card {
+        display: flex;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 20px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(12px);
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      .appointment-card:hover {
+        transform: translateX(4px);
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .time-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 50px;
+      }
+      .time-col .time {
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .time-col .period {
+        font-size: 0.6rem;
+        color: var(--sub);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .time-col .line {
+        width: 2px;
+        flex: 1;
+        background: linear-gradient(to bottom, var(--sub), transparent);
+        margin: 6px 0;
+        opacity: 0.3;
+        border-radius: 2px;
+      }
+      .app-info h4 {
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .app-info p {
+        font-size: 0.7rem;
+        color: var(--sub);
+        font-weight: 500;
+      }
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 6px;
+      }
+      .tag-orange {
+        background: rgba(242, 96, 58, 0.1);
+        color: #f2603a;
+      }
+      .tag-green {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+      }
+      .tag-blue {
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+      }
+      .freq-btn {
+        flex: 1;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.4);
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--sub);
+      }
+      .freq-btn.active {
+        border-color: var(--orange-2);
+        color: var(--orange-2);
+        background: rgba(242, 96, 58, 0.08);
+      }
+      .med-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.5);
+        margin-bottom: 10px;
+      }
+      .med-card h4 {
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .med-card p {
+        font-size: 0.65rem;
+        color: var(--sub);
+        font-weight: 500;
+        margin-top: 2px;
+      }
+      .delete-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        border: none;
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      .delete-btn:hover {
+        background: rgba(239, 68, 68, 0.2);
+      }
+      .search-dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        border-radius: 18px;
+        border: 1.5px solid var(--card-border);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        z-index: 100;
+        box-shadow: var(--shadow-soft);
+        display: none;
+      }
+      .search-dropdown-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+      }
+      .search-dropdown-item:hover {
+        background: rgba(242, 96, 58, 0.05);
+      }
+      .search-dropdown-item:last-child {
+        border-bottom: none;
+      }
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(23, 27, 46, 0.5);
+        backdrop-filter: blur(12px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal-content {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(30px);
+        border-radius: 32px;
+        border: 1.5px solid var(--card-border);
+        padding: 32px;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: var(--shadow-soft);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-overlay.active .modal-content {
+        transform: scale(1);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .modal-header h3 {
+        font-size: 1.2rem;
+        font-weight: 800;
+      }
+      .modal-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        border: 1.5px solid var(--card-border);
+        background: var(--glass-bg);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      .modal-close:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border-color: rgba(239, 68, 68, 0.2);
+      }
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 460px;
+        padding: 12px 24px 24px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border-top: 1.5px solid var(--card-border);
+      }
+      .nav-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--sub);
+        transition: all 0.2s ease;
+        font-family: inherit;
+        font-size: 0.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .nav-btn.active {
+        color: var(--orange-2);
+      }
+      .nav-btn svg {
+        width: 22px;
+        height: 22px;
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(135, 145, 170, 0.3);
+        border-radius: 10px;
+      }
+      .view-hidden {
+        display: none !important;
+      }
+
+
+/* =====================================================
+   PATIENT PAGE - NALAM AI ROBOT BUTTON
+   ===================================================== */
+
+.patient-ai-bot {
+    position: fixed;
+
+    right: 20px;
+    bottom: 20px;
+
+    width: 64px;
+    height: 64px;
+
+    border: 1.5px solid rgba(255, 255, 255, 0.9);
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.96),
+            rgba(225,248,252,0.90)
+        );
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 9999;
+
+    box-shadow:
+        0 12px 30px rgba(60, 70, 110, 0.18),
+        0 0 25px rgba(34, 184, 207, 0.15),
+        inset 0 1px 3px rgba(255,255,255,0.95);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Robot SVG */
+
+.patient-ai-bot svg {
+    width: 39px;
+    height: 39px;
+
+    position: relative;
+
+    z-index: 2;
+
+    transition:
+        transform 0.3s ease;
+}
+
+
+/* Hover */
+
+.patient-ai-bot:hover {
+    transform:
+        translateY(-4px)
+        scale(1.05);
+
+    box-shadow:
+        0 18px 40px rgba(60, 70, 110, 0.22),
+        0 0 35px rgba(34, 184, 207, 0.25),
+        inset 0 1px 3px rgba(255,255,255,0.95);
+}
+
+
+.patient-ai-bot:hover svg {
+    transform:
+        rotate(-3deg)
+        scale(1.05);
+}
+
+
+/* Click */
+
+.patient-ai-bot:active {
+    transform:
+        scale(0.92);
+}
+
+
+/* =====================================================
+   PULSE
+   ===================================================== */
+
+.patient-ai-pulse {
+    position: absolute;
+
+    inset: -6px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(34,184,207,0.25);
+
+    animation:
+        patientBotPulse 2.5s ease-out infinite;
+
+    pointer-events: none;
+}
+
+
+@keyframes patientBotPulse {
+
+    0% {
+        transform: scale(0.85);
+        opacity: 0.7;
+    }
+
+    70% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
+
+}
+
+
+/* =====================================================
+   ONLINE DOT
+   ===================================================== */
+
+.patient-ai-online {
+    position: absolute;
+
+    right: 2px;
+    top: 1px;
+
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: #20c997;
+
+    border:
+        3px solid white;
+
+    z-index: 5;
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 600px) {
+
+    .patient-ai-bot {
+
+        width: 60px;
+        height: 60px;
+
+        right: 16px;
+
+        bottom:
+            calc(
+                16px +
+                env(safe-area-inset-bottom)
+            );
+
+    }
+
+    .patient-ai-bot svg {
+
+        width: 36px;
+        height: 36px;
+
+    }
+
+}
+    </style>
+  </head>
+  <body>
+    <!-- Nalam Clinic (first page) -->
+    <div id="nalamContainer" class="nalam-hidden">
+      <div id="bgLayer"></div>
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div id="noiseOverlay"></div>
+      <svg id="orbLayer" width="100%" height="100%"></svg>
+
+      <div class="screen">
+        <div class="icon-wrap" aria-label="Nalam Clinic Logo">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="8" width="18" height="12" rx="2.5" fill="#F2603A" />
+            <path
+              d="M9 8V6.5C9 5.67 9.67 5 10.5 5H13.5C14.33 5 15 5.67 15 6.5V8"
+              stroke="#F2603A"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+            <path
+              d="M12 11.5V16.5M9.5 14H14.5"
+              stroke="#FFFFFF"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+
+        <h1>Nalam Clinic</h1>
+        <p class="tagline">Excellence in Care</p>
+
+        <nav class="cards" role="navigation" aria-label="Portal Selection">
+          <button
+            class="card doctor"
+            type="button"
+            onclick="handleSelect(event, 'doctor')"
+            aria-label="Doctor Portal"
+          >
+            <span class="card-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#F2603A"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M8 3v3a2 2 0 0 0 4 0V3" />
+                <path d="M8 3h4" />
+                <path d="M10 9v3a5 5 0 0 0 10 0v-1" />
+                <circle cx="20" cy="8" r="2" />
+              </svg>
+            </span>
+            <span class="card-text">
+              <span class="card-label">Doctor</span>
+              <span class="card-desc">Manage appointments & patients</span>
+            </span>
+            <span class="card-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </button>
+
+          <button
+            class="card patient"
+            type="button"
+            onclick="handleSelect(event, 'patient')"
+            aria-label="Patient Portal"
+          >
+            <span class="card-icon">
+              <svg viewBox="0 0 24 24" fill="#8B5CF6">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+              </svg>
+            </span>
+            <span class="card-text">
+              <span class="card-label">Patient</span>
+              <span class="card-desc">Book visits & view records</span>
+            </span>
+            <span class="card-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </button>
+
+          <button
+            class="card pharmacy"
+            type="button"
+            onclick="handleSelect(event, 'pharmacy')"
+            aria-label="Nalam Pharmacy Portal"
+          >
+            <span class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect
+                  x="4"
+                  y="4"
+                  width="16"
+                  height="16"
+                  rx="5"
+                  fill="#22B8CF"
+                />
+                <path
+                  d="M8 13l2.2-2.5L12 13l2-3.5 2 2.2"
+                  stroke="#fff"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+              </svg>
+            </span>
+            <span class="card-text">
+              <span class="card-label">Nalam Pharmacy</span>
+              <span class="card-desc">Prescriptions & inventory</span>
+            </span>
+            <span class="card-arrow">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </span>
+          </button>
+        </nav>
+
+        <footer>
+          © 2026 Nalam Clinic <span class="heart">♥</span> All rights reserved
+        </footer>
+      </div>
+    </div>
+
+    <!-- Splash Page (CARE+) – second -->
+    <main class="splash-page active" id="splashPage">
+      <div class="mesh-gradient"></div>
+      <div class="ambient-glow-splash"></div>
+      <div class="orb-splash orb-1s"></div>
+      <div class="orb-splash orb-2s"></div>
+      <div class="orb-splash orb-3s"></div>
+      <div class="orb-splash orb-4s"></div>
+      <div class="orb-splash orb-5s"></div>
+      <div class="orb-splash orb-6s"></div>
+      <div class="orb-splash orb-7s"></div>
+      <canvas id="constellation"></canvas>
+      <div class="rings-splash">
+        <span class="ring-splash"></span>
+        <span class="ring-splash"></span>
+        <span class="ring-splash"></span>
+        <span class="ring-splash"></span>
+        <span class="ring-splash"></span>
+      </div>
+      <div class="med-symbol symbol-1s">✦</div>
+      <div class="med-symbol symbol-2s">+</div>
+      <div class="med-symbol symbol-3s">✦</div>
+      <div class="med-symbol symbol-4s">+</div>
+      <div class="med-symbol symbol-5s">✦</div>
+      <div class="med-symbol symbol-6s">+</div>
+      <div class="med-symbol symbol-7s">✦</div>
+      <div class="med-symbol symbol-8s">+</div>
+
+      <section class="content-splash">
+        <div class="logo-area-splash">
+          <div class="logo-mark-splash" id="logoMarkSplash">
+            <div class="logo-glow-splash"></div>
+            <svg
+              class="heart-svg-splash"
+              viewBox="0 0 120 120"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-label="CARE plus healthcare logo"
+            >
+              <defs>
+                <linearGradient
+                  id="heartGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    style="stop-color: #0077b6; stop-opacity: 1"
+                  />
+                  <stop
+                    offset="50%"
+                    style="stop-color: #00b4d8; stop-opacity: 1"
+                  />
+                  <stop
+                    offset="100%"
+                    style="stop-color: #90e0ef; stop-opacity: 1"
+                  />
+                </linearGradient>
+              </defs>
+              <path
+                class="heart-shape-splash"
+                d="M60 98 C54 92 22 70 18 45 C14 22 43 12 60 34 C77 12 106 22 102 45 C98 70 66 92 60 98"
+              />
+              <path class="inner-heart-splash" d="M31 48 C32 35 46 31 55 42" />
+            </svg>
+            <div class="plus-splash">+</div>
+          </div>
+          <div class="wordmark-splash" aria-label="CARE plus">
+            <span class="brand-base">CARE</span
+            ><span class="brand-special-splash">+</span>
+          </div>
+          <div class="tagline-splash">CARE TODAY FOR A BRIGHTER TOMORROW</div>
+          <div class="glass-card-splash">
+            <div class="loading-area-splash">
+              <div class="progress-track-splash">
+                <div class="progress-bar-splash" id="progressBarSplash"></div>
+              </div>
+              <div class="loading-message-splash">
+                Loading a healthier tomorrow<span
+                  class="loading-dots-splash"
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== DOCTOR LOGIN ==================== -->
+    <div
+      id="doctor-login-view"
+      class="view-hidden"
+      style="
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #eef2fb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      "
+    >
+      <div style="width: 100%; max-width: 400px">
+        <div class="view-header">
+          <button class="back-btn" onclick="showView('landing')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2>Doctor Login</h2>
+          <div style="width: 42px"></div>
+        </div>
+        <div class="inner-box" style="padding: 40px 28px">
+          <div style="text-align: center; margin-bottom: 28px">
+            <div
+              style="
+                width: 70px;
+                height: 70px;
+                border-radius: 22px;
+                background: linear-gradient(135deg, #f2603a, #ff8a65);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+                box-shadow: 0 8px 24px rgba(242, 96, 58, 0.25);
+              "
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M8 3v3a2 2 0 0 0 4 0V3" />
+                <path d="M8 3h4" />
+                <path d="M10 9v3a5 5 0 0 0 10 0v-1" />
+                <circle cx="20" cy="8" r="2" />
+              </svg>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--sub); font-weight: 500">
+              Welcome back, Doctor
+            </p>
+          </div>
+          <form
+            onsubmit="
+              event.preventDefault();
+              verifyDoctorLogin();
+            "
+          >
+            <input
+              type="text"
+              id="doctorName"
+              class="glass-input"
+              placeholder="Doctor Name"
+              required
+            />
+            <input
+              type="password"
+              id="doctorPassword"
+              class="glass-input"
+              placeholder="Password"
+              required
+            />
+            <p
+              id="loginError"
+              style="
+                color: #ef4444;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 14px;
+                display: none;
+              "
+            >
+              Incorrect Password
+            </p>
+            <button
+              type="submit"
+              class="glass-btn btn-orange"
+              style="margin-top: 8px"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+              </svg>
+              Login
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== DOCTOR DASHBOARD ==================== -->
+    <div
+      id="doctor-view"
+      class="view-hidden"
+      style="
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #eef2fb;
+        overflow-y: auto;
+        padding-bottom: 100px;
+      "
+    >
+      <div
+        class="app-view"
+        style="max-width: 460px; margin: 0 auto; padding: 24px 24px 100px"
+      >
+        <div class="dashboard-header">
+          <div>
+            <p
+              id="timeGreeting"
+              style="
+                font-size: 0.75rem;
+                color: var(--sub);
+                font-weight: 600;
+                margin-bottom: 2px;
+              "
+            >
+              Good Morning
+            </p>
+            <h2
+              id="welcomeDoctorName"
+              style="
+                font-size: 1.3rem;
+                font-weight: 800;
+                letter-spacing: -0.5px;
+                background: linear-gradient(
+                  135deg,
+                  var(--ink) 0%,
+                  #3d4466 100%
+                );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+            >
+              Dr. Nalam
+            </h2>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px">
+            <div class="avatar" id="doctorAvatar">N</div>
+            <button
+              class="back-btn"
+              onclick="logoutDoctor()"
+              title="Logout"
+              style="color: #ef4444; border-color: rgba(239, 68, 68, 0.2)"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <input
+          type="text"
+          id="patientSearchInput"
+          class="glass-input"
+          placeholder="Search patients by name or ID..."
+          oninput="filterDashboard()"
+          style="margin-bottom: 20px"
+        />
+
+        <button
+          onclick="showView('prescription')"
+          class="glass-btn btn-orange"
+          style="margin-bottom: 24px"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Prescription
+        </button>
+
+        <div id="dashboard-default-content">
+          <div class="section-title">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F2603A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Recent Patients
+            <button
+              onclick="openSeeAllModal()"
+              style="
+                margin-left: auto;
+                font-size: 0.65rem;
+                color: var(--orange-2);
+                font-weight: 700;
+                background: none;
+                border: none;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              "
+            >
+              See All
+            </button>
+          </div>
+          <div
+            id="recentPatientsContainer"
+            style="
+              display: flex;
+              gap: 12px;
+              overflow-x: auto;
+              padding-bottom: 8px;
+              margin-bottom: 24px;
+            "
+          ></div>
+
+          <div class="section-title">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F2603A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            Today's Appointments
+            <button
+              onclick="openScheduleModal()"
+              style="
+                margin-left: auto;
+                font-size: 0.65rem;
+                color: var(--orange-2);
+                font-weight: 700;
+                background: none;
+                border: none;
+                cursor: pointer;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              "
+            >
+              Schedule
+            </button>
+          </div>
+          <div id="appointmentsContainer"></div>
+        </div>
+
+        <div id="dashboard-search-results" class="view-hidden">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 16px;
+            "
+          >
+            <h3 style="font-size: 1.1rem; font-weight: 800">Search Results</h3>
+            <span
+              id="searchResultCount"
+              style="
+                font-size: 0.6rem;
+                background: rgba(242, 96, 58, 0.1);
+                color: #f2603a;
+                padding: 4px 10px;
+                border-radius: 100px;
+                font-weight: 700;
+                text-transform: uppercase;
+              "
+              >0 Matches</span
+            >
+          </div>
+          <div id="searchResultsList"></div>
+          <div
+            id="search-empty-state"
+            class="view-hidden"
+            style="text-align: center; padding: 40px 20px"
+          >
+            <div
+              style="
+                width: 64px;
+                height: 64px;
+                border-radius: 20px;
+                background: rgba(135, 145, 170, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+              "
+            >
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="var(--sub)"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+            <p
+              style="
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: var(--ink);
+                margin-bottom: 4px;
+              "
+            >
+              No patients found
+            </p>
+            <p style="font-size: 0.7rem; color: var(--sub)">
+              Try a different search term
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="showView('doctor')">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          Home
+        </button>
+        <button class="nav-btn" onclick="openPatientsFullList()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Patients
+        </button>
+        <button class="nav-btn" onclick="openScheduleModal()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          Schedule
+        </button>
+        <button class="nav-btn" onclick="logoutDoctor()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Logout
+        </button>
+      </nav>
+    </div>
+
+    <!-- ==================== PRESCRIPTION VIEW ==================== -->
+    <div
+      id="prescription-view"
+      class="view-hidden"
+      style="
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: #eef2fb;
+        overflow-y: auto;
+        padding-bottom: 120px;
+      "
+    >
+      <div
+        class="app-view"
+        style="max-width: 460px; margin: 0 auto; padding: 24px 24px 120px"
+      >
+        <div class="view-header">
+          <button class="back-btn" onclick="showView('doctor')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2>Prescription</h2>
+          <div style="width: 42px"></div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="section-title" style="margin-bottom: 12px">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F2603A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Patient Details
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px">
+            <input
+              type="text"
+              id="prescPatientName"
+              class="glass-input"
+              placeholder="Patient Name"
+              style="margin-bottom: 0"
+            />
+            <input
+              type="number"
+              id="prescPatientAge"
+              class="glass-input"
+              placeholder="Age"
+              style="margin-bottom: 0"
+            />
+          </div>
+          <input
+            type="date"
+            id="prescDate"
+            class="glass-input"
+            style="margin-bottom: 0; margin-top: 10px"
+          />
+        </div>
+
+        <div
+          class="glass-panel"
+          style="
+            border-color: rgba(242, 96, 58, 0.25);
+            background: linear-gradient(
+              120deg,
+              rgba(255, 214, 193, 0.25),
+              rgba(255, 255, 255, 0.35)
+            );
+          "
+        >
+          <div class="section-title" style="margin-bottom: 12px">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F2603A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M10.5 20.5l10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"
+              />
+              <path d="m8.5 8.5 7 7" />
+            </svg>
+            Add Medicine
+          </div>
+          <div style="position: relative; margin-bottom: 10px">
+            <input
+              type="text"
+              id="medSearchInput"
+              class="glass-input"
+              placeholder="Search medicine..."
+              oninput="searchMedicines(this.value)"
+              autocomplete="off"
+              style="margin-bottom: 0"
+            />
+            <div id="medicineSearchResults" class="search-dropdown"></div>
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 10px;
+              margin-bottom: 10px;
+            "
+          >
+            <input
+              type="text"
+              id="medDosage"
+              class="glass-input"
+              placeholder="Dosage (e.g. 500mg)"
+              style="margin-bottom: 0"
+            />
+            <input
+              type="text"
+              id="medDuration"
+              class="glass-input"
+              placeholder="Duration (e.g. 5 days)"
+              style="margin-bottom: 0"
+            />
+          </div>
+          <p
+            style="
+              font-size: 0.7rem;
+              font-weight: 600;
+              color: var(--sub);
+              margin-bottom: 8px;
+            "
+          >
+            Frequency
+          </p>
+          <div style="display: flex; gap: 8px; margin-bottom: 14px">
+            <button
+              class="freq-btn active"
+              onclick="setFrequency('1-0-1', this)"
+            >
+              1-0-1
+            </button>
+            <button class="freq-btn" onclick="setFrequency('1-1-1', this)">
+              1-1-1
+            </button>
+            <button class="freq-btn" onclick="setFrequency('0-0-1', this)">
+              0-0-1
+            </button>
+          </div>
+          <select
+            id="medInstructions"
+            class="glass-input glass-select"
+            style="margin-bottom: 14px"
+          >
+            <option>After food</option>
+            <option>Before food</option>
+            <option>Empty stomach</option>
+          </select>
+          <div style="display: flex; gap: 10px">
+            <button
+              onclick="addMedicineToList()"
+              class="glass-btn btn-orange"
+              style="flex: 2"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add to List
+            </button>
+            <button
+              onclick="showPrescriptionVisual()"
+              class="glass-btn btn-dark"
+              style="flex: 1"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+                <polyline points="10 9 9 9 8 9" />
+              </svg>
+              Preview
+            </button>
+          </div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="section-title" style="margin-bottom: 12px">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F2603A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
+            Prescription List
+            <span
+              id="prescItemCount"
+              style="
+                margin-left: auto;
+                font-size: 0.7rem;
+                color: var(--sub);
+                font-weight: 500;
+              "
+              >0 Items</span
+            >
+          </div>
+          <div id="activePrescriptionList"></div>
+        </div>
+
+        <div class="glass-panel">
+          <div class="section-title" style="margin-bottom: 12px">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#F2603A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+              />
+              <path
+                d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+              />
+            </svg>
+            Notes / Diagnosis
+          </div>
+          <textarea
+            id="prescDiagnosis"
+            class="glass-input"
+            placeholder="Type diagnosis and general advice here..."
+          ></textarea>
+        </div>
+      </div>
+
+      <div
+        style="
+          position: fixed;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          max-width: 460px;
+          padding: 16px 24px 24px;
+          z-index: 150;
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(20px);
+          border-top: 1.5px solid var(--card-border);
+        "
+      >
+        <button onclick="openShareModal()" class="glass-btn btn-whatsapp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.633 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+            />
+          </svg>
+          Send via WhatsApp
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== PATIENT VIEW ==================== -->
+    <div
+  id="patient-view"
+  class="view-hidden"
+  style="
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #eef2fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  "
+>
+  <div style="width: 100%; max-width: 400px">
+    
+    <!-- Patient Header -->
+    <div class="view-header">
+      <button class="back-btn" onclick="showView('landing')">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <h2>Patient Registration</h2>
+
+      <div style="width: 42px"></div>
+    </div>
+
+    <!-- Patient Registration Box -->
+    <div class="inner-box">
+      
+      <div style="text-align: center; margin-bottom: 24px">
+        
+        <div
+          style="
+            width: 70px;
+            height: 70px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+          "
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+
+        <p
+          style="
+            font-size: 0.75rem;
+            color: var(--sub);
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+          "
+        >
+          பதிவு செய்க / Register
+        </p>
+      </div>
+
+      <!-- Patient Form -->
+      <form
+        onsubmit="
+          event.preventDefault();
+          submitPatientForm();
+        "
+      >
+        <input
+          type="text"
+          id="reg-name"
+          class="glass-input"
+          placeholder="பெயர் / Name"
+          required
+        />
+
+        <input
+          type="number"
+          id="reg-age"
+          class="glass-input"
+          placeholder="வயது / Age"
+          required
+        />
+
+        <input
+          type="tel"
+          id="reg-phone"
+          class="glass-input"
+          placeholder="தொலைபேசி / Phone"
+          required
+        />
+
+        <textarea
+          id="reg-reason"
+          class="glass-input"
+          placeholder="காரணம் (விருப்பமானது) / Reason (Optional)"
+          rows="3"
+        ></textarea>
+
+        <button
+          type="submit"
+          class="glass-btn btn-purple"
+          style="margin-top: 8px"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+
+          சமர்ப்பிக்க / Submit
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- =====================================================
+       NALAM AI CHATBOT BUTTON
+       ===================================================== -->
+
+  <button
+    type="button"
+    class="patient-ai-bot"
+    onclick="openPatientChatbot()"
+    aria-label="Open Nalam AI Chatbot"
+    title="Nalam AI Assistant"
+  >
+    <span class="patient-ai-pulse"></span>
+
+    <svg
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+
+      <!-- Robot head -->
+      <rect
+        x="18"
+        y="25"
+        width="64"
+        height="52"
+        rx="18"
+        fill="#E7FAFD"
+        stroke="#3DB8C7"
+        stroke-width="4"
+      />
+
+      <!-- Face screen -->
+      <rect
+        x="28"
+        y="38"
+        width="44"
+        height="25"
+        rx="10"
+        fill="white"
+        stroke="#73C9D5"
+        stroke-width="3"
+      />
+
+      <!-- Left eye -->
+      <circle
+        cx="40"
+        cy="50"
+        r="4"
+        fill="#35B8C8"
+      />
+
+      <!-- Right eye -->
+      <circle
+        cx="60"
+        cy="50"
+        r="4"
+        fill="#35B8C8"
+      />
+
+      <!-- Smile -->
+      <path
+        d="M40 57C45 61 55 61 60 57"
+        stroke="#35B8C8"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+
+      <!-- Antenna -->
+      <path
+        d="M50 25V16"
+        stroke="#3DB8C7"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+
+      <!-- Antenna light -->
+      <circle
+        cx="50"
+        cy="13"
+        r="4"
+        fill="#8B7DE8"
+      />
+
+      <!-- Left ear -->
+      <rect
+        x="10"
+        y="43"
+        width="9"
+        height="19"
+        rx="4.5"
+        fill="#8EDAE3"
+      />
+
+      <!-- Right ear -->
+      <rect
+        x="81"
+        y="43"
+        width="9"
+        height="19"
+        rx="4.5"
+        fill="#8EDAE3"
+      />
+
+    </svg>
+
+    <!-- Online indicator -->
+    <span class="patient-ai-online"></span>
+
+  </button>
+
+</div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <div id="prescription-visual-modal" class="modal-overlay">
+      <div
+        class="modal-content"
+        style="max-width: 340px; padding: 0; overflow: hidden"
+      >
+        <div
+          style="
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            padding: 24px;
+            text-align: center;
+            color: white;
+          "
+        >
+          <h3
+            style="font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px"
+          >
+            Nalam Clinic
+          </h3>
+          <p
+            style="
+              font-size: 0.6rem;
+              opacity: 0.8;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+              font-weight: 600;
+            "
+          >
+            Medical Prescription
+          </p>
+        </div>
+        <div style="padding: 24px">
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12px;
+              margin-bottom: 20px;
+              padding-bottom: 16px;
+              border-bottom: 1.5px dashed rgba(0, 0, 0, 0.1);
+            "
+          >
+            <div>
+              <p
+                style="
+                  font-size: 0.6rem;
+                  color: var(--sub);
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  font-weight: 600;
+                  margin-bottom: 2px;
+                "
+              >
+                Patient
+              </p>
+              <p
+                id="v-patientName"
+                style="font-size: 0.85rem; font-weight: 700"
+              >
+                -
+              </p>
+            </div>
+            <div style="text-align: right">
+              <p
+                style="
+                  font-size: 0.6rem;
+                  color: var(--sub);
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  font-weight: 600;
+                  margin-bottom: 2px;
+                "
+              >
+                Date
+              </p>
+              <p id="v-date" style="font-size: 0.85rem; font-weight: 700">-</p>
+            </div>
+            <div>
+              <p
+                style="
+                  font-size: 0.6rem;
+                  color: var(--sub);
+                  text-transform: uppercase;
+                  letter-spacing: 1px;
+                  font-weight: 600;
+                  margin-bottom: 2px;
+                "
+              >
+                Age
+              </p>
+              <p id="v-ageSex" style="font-size: 0.85rem; font-weight: 700">
+                -
+              </p>
+            </div>
+          </div>
+          <p
+            style="
+              font-size: 1.5rem;
+              font-weight: 800;
+              color: #2563eb;
+              margin-bottom: 16px;
+              font-family: serif;
+            "
+          >
+            Rx
+          </p>
+          <div id="v-medicineList" style="margin-bottom: 20px"></div>
+          <div
+            style="
+              padding-top: 16px;
+              border-top: 1.5px solid rgba(0, 0, 0, 0.05);
+            "
+          >
+            <p
+              style="
+                font-size: 0.6rem;
+                color: var(--sub);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-weight: 600;
+                margin-bottom: 4px;
+              "
+            >
+              Notes & Advice
+            </p>
+            <p
+              id="v-diagnosis"
+              style="
+                font-size: 0.8rem;
+                color: var(--ink);
+                font-weight: 500;
+                line-height: 1.5;
+              "
+            >
+              No notes provided.
+            </p>
+          </div>
+          <div
+            style="
+              margin-top: 20px;
+              padding-top: 16px;
+              border-top: 1.5px solid rgba(0, 0, 0, 0.05);
+              text-align: center;
+            "
+          >
+            <p style="font-size: 0.7rem; color: #2563eb; font-weight: 700">
+              www.Nalamclinic.com
+            </p>
+            <p style="font-size: 0.65rem; color: var(--sub); margin-top: 2px">
+              123 Antony St., Salavakkam | 9025276457
+            </p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; padding: 0 24px 24px">
+          <button
+            onclick="closePrescriptionVisual()"
+            class="glass-btn btn-dark"
+            style="flex: 1; font-size: 0.8rem"
+          >
+            Close</button
+          ><button
+            onclick="openShareModal()"
+            class="glass-btn btn-whatsapp"
+            style="flex: 1; font-size: 0.8rem"
+          >
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="whatsapp-number-modal" class="modal-overlay">
+      <div class="modal-content" style="text-align: center">
+        <div
+          style="
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+          "
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.633 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+            />
+          </svg>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 4px">
+          WhatsApp Number
+        </h3>
+        <p style="font-size: 0.75rem; color: var(--sub); margin-bottom: 20px">
+          Enter patient's mobile number
+        </p>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+          "
+        >
+          <span style="font-weight: 700; color: var(--sub); font-size: 0.9rem"
+            >+91</span
+          ><input
+            type="tel"
+            id="whatsappNumberInput"
+            class="glass-input"
+            placeholder="0000000000"
+            maxlength="10"
+            style="margin-bottom: 0; flex: 1"
+          />
+        </div>
+        <button
+          onclick="sendPrescriptionToWhatsApp()"
+          class="glass-btn btn-whatsapp"
+          style="margin-bottom: 10px"
+        >
+          Send Prescription</button
+        ><button
+          onclick="closeShareModal()"
+          class="glass-btn"
+          style="
+            background: rgba(135, 145, 170, 0.15);
+            color: var(--sub);
+            box-shadow: none;
+          "
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+    <div id="success-modal" class="modal-overlay">
+      <div class="modal-content" style="text-align: center">
+        <div
+          style="
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+          "
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 4px">
+          பதிவு செய்யப்பட்டது!
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--sub); margin-bottom: 4px">
+          Appointment registered successfully
+        </p>
+        <p
+          style="
+            font-size: 0.65rem;
+            color: var(--orange-2);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+          "
+        >
+          Will be intimated soon
+        </p>
+        <button onclick="closeModal()" class="glass-btn btn-dark">
+          சரி / OK
+        </button>
+      </div>
+    </div>
+    <div id="appointment-details-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Appointment Details</h3>
+          <button class="modal-close" onclick="closeAppointmentDetails()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px">
+          <div
+            style="
+              width: 56px;
+              height: 56px;
+              border-radius: 18px;
+              background: linear-gradient(135deg, #f2603a, #ff8a65);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 12px;
+              box-shadow: 0 6px 20px rgba(242, 96, 58, 0.2);
+            "
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <h4
+            id="det-name"
+            style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px"
+          >
+            Patient Name
+          </h4>
+          <p
+            id="det-age"
+            style="font-size: 0.8rem; color: var(--orange-2); font-weight: 700"
+          >
+            Age: -
+          </p>
+          <p
+            id="det-phone"
+            style="font-size: 0.7rem; color: var(--sub); font-weight: 500"
+          >
+            Phone: -
+          </p>
+        </div>
+        <div class="glass-panel" style="margin-bottom: 20px; padding: 16px">
+          <p
+            style="
+              font-size: 0.6rem;
+              color: var(--sub);
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              font-weight: 600;
+              margin-bottom: 4px;
+            "
+          >
+            Reason / Notes
+          </p>
+          <p
+            id="det-reason"
+            style="font-size: 0.85rem; font-weight: 500; line-height: 1.5"
+          >
+            No specific reason provided.
+          </p>
+        </div>
+        <button onclick="closeAppointmentDetails()" class="glass-btn btn-dark">
+          Close
+        </button>
+      </div>
+    </div>
+    <div id="see-all-patients-modal" class="modal-overlay">
+      <div
+        class="modal-content"
+        style="
+          max-width: 400px;
+          max-height: 80vh;
+          display: flex;
+          flex-direction: column;
+          padding: 0;
+          overflow: hidden;
+        "
+      >
+        <div
+          style="
+            padding: 24px 24px 16px;
+            border-bottom: 1.5px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h3 style="font-size: 1.1rem; font-weight: 800">Patient History</h3>
+          <button class="modal-close" onclick="closeSeeAllModal()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div
+          id="seeAllPatientsList"
+          style="overflow-y: auto; padding: 16px 24px 24px; flex: 1"
+        ></div>
+      </div>
+    </div>
+    <div id="schedule-management-modal" class="modal-overlay">
+      <div
+        class="modal-content"
+        style="
+          max-width: 400px;
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+          padding: 0;
+          overflow: hidden;
+        "
+      >
+        <div
+          style="
+            padding: 24px 24px 16px;
+            border-bottom: 1.5px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <h3 style="font-size: 1.1rem; font-weight: 800">Appointments</h3>
+            <p
+              style="
+                font-size: 0.6rem;
+                color: var(--orange-2);
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-top: 2px;
+              "
+            >
+              Manage Daily Schedule
+            </p>
+          </div>
+          <button class="modal-close" onclick="closeScheduleModal()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div
+          id="scheduleManagementList"
+          style="overflow-y: auto; padding: 16px 24px 24px; flex: 1"
+        ></div>
+      </div>
+    </div>
+    <div id="visit-time-modal" class="modal-overlay">
+      <div class="modal-content" style="text-align: center">
+        <div
+          style="
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+          "
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 4px">
+          Visit Notification
+        </h3>
+        <p style="font-size: 0.75rem; color: var(--sub); margin-bottom: 20px">
+          Enter visit time or type AVAILABLE
+        </p>
+        <input
+          type="text"
+          id="visitTimeInput"
+          class="glass-input"
+          placeholder="e.g. 10:30 AM / AVAILABLE"
+          style="text-align: center; margin-bottom: 20px"
+        /><button
+          id="confirmVisitBtn"
+          class="glass-btn btn-orange"
+          style="margin-bottom: 10px"
+        >
+          Send SMS</button
+        ><button
+          onclick="closeVisitTimeModal()"
+          class="glass-btn"
+          style="
+            background: rgba(135, 145, 170, 0.15);
+            color: var(--sub);
+            box-shadow: none;
+          "
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+    <div id="patients-full-list-modal" class="modal-overlay">
+      <div
+        class="modal-content"
+        style="
+          max-width: 400px;
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+          padding: 0;
+          overflow: hidden;
+        "
+      >
+        <div
+          style="
+            padding: 24px 24px 16px;
+            border-bottom: 1.5px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <h3 style="font-size: 1.1rem; font-weight: 800">Patient Records</h3>
+            <p
+              style="
+                font-size: 0.6rem;
+                color: var(--orange-2);
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-top: 2px;
+              "
+            >
+              25 Recent Consultations
+            </p>
+          </div>
+          <button class="modal-close" onclick="closePatientsFullList()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div
+          id="fullPatientsHistoryList"
+          style="overflow-y: auto; padding: 16px 24px 24px; flex: 1"
+        ></div>
+      </div>
+    </div>
+
+    <script>
+      /* ========== VIEW MANAGEMENT ========== */
+      function showView(viewId) {
+        const views = ["doctor-login", "doctor", "prescription", "patient"];
+        views.forEach((v) => {
+          const el = document.getElementById(v + "-view");
+          if (el) el.classList.add("view-hidden");
+        });
+        if (viewId === "landing") {
+          document
+            .getElementById("nalamContainer")
+            .classList.remove("nalam-hidden");
+          document
+            .getElementById("nalamContainer")
+            .classList.add("nalam-visible");
+          return;
+        }
+        document.getElementById("nalamContainer").classList.add("nalam-hidden");
+        document
+          .getElementById("nalamContainer")
+          .classList.remove("nalam-visible");
+        const target = document.getElementById(viewId + "-view");
+        if (target) {
+          target.classList.remove("view-hidden");
+          window.scrollTo(0, 0);
+        }
+        if (viewId === "doctor") {
+          const hours = new Date().getHours();
+          document.getElementById("timeGreeting").textContent =
+            hours < 12
+              ? "Good Morning"
+              : hours < 17
+                ? "Good Afternoon"
+                : "Good Evening";
+          renderAppointments();
+          renderRecentPatients();
+        }
+      }
+      /* =====================================================
+      OPEN NALAM AI CHATBOT FROM PATIENT PAGE
+      ===================================================== */
+
+      function openPatientChatbot() {
+        window.location.href = "chatbot.html";
+      }
+
+      function handleSelect(event, role) {
+        const btn = event.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement("span");
+        const size = Math.max(rect.width, rect.height);
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
+        ripple.style.width = ripple.style.height = size + "px";
+        ripple.style.left = x + "px";
+        ripple.style.top = y + "px";
+        ripple.classList.add("ripple");
+        const colors = {
+          doctor: "rgba(242,96,58,0.25)",
+          patient: "rgba(139,92,246,0.25)",
+          pharmacy: "rgba(34,184,207,0.25)",
+        };
+        ripple.style.background = colors[role] || colors.doctor;
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+        setTimeout(() => {
+          if (role === "doctor") {
+            showView("doctor-login");
+          } else if (role === "patient") {
+            showView("patient");
+          } else if (role === "pharmacy") {
+            window.location.href = "pharmacy.html";
+          }
+        }, 200);
+      }
+
+      /* ========== ORB SYSTEM (Nalam) ========== */
+      (function buildOrbs() {
+        const svg = document.getElementById("orbLayer");
+        const w = window.innerWidth + 160;
+        const h = window.innerHeight + 160;
+        svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+        const palette = [
+          ["#bfe3ff", "#8ec9f6"],
+          ["#ffe1c2", "#ffcf9e"],
+          ["#e2c9ff", "#cbaef0"],
+          ["#bde8ff", "#90cdef"],
+          ["#d9c6ff", "#b79cff"],
+          ["#ffd3e0", "#ffb3c6"],
+          ["#c9f5e4", "#9be6cb"],
+          ["#ffe8d6", "#ffc9a3"],
+        ];
+        const NUM_ORBS = 22;
+        const svgNS = "http://www.w3.org/2000/svg";
+        const orbs = [];
+        const defsContainer = document.createElementNS(svgNS, "defs");
+        svg.appendChild(defsContainer);
+        for (let i = 0; i < NUM_ORBS; i++) {
+          const [c1, c2] = palette[i % palette.length];
+          const r = 6 + Math.random() * 28;
+          const cx = Math.random() * w;
+          const cy = Math.random() * h;
+          const gradId = `orbGrad${i}`;
+          const grad = document.createElementNS(svgNS, "radialGradient");
+          grad.setAttribute("id", gradId);
+          grad.setAttribute("cx", "35%");
+          grad.setAttribute("cy", "35%");
+          const stop1 = document.createElementNS(svgNS, "stop");
+          stop1.setAttribute("offset", "0%");
+          stop1.setAttribute("stop-color", c1);
+          const stop2 = document.createElementNS(svgNS, "stop");
+          stop2.setAttribute("offset", "100%");
+          stop2.setAttribute("stop-color", c2);
+          grad.appendChild(stop1);
+          grad.appendChild(stop2);
+          defsContainer.appendChild(grad);
+          const circle = document.createElementNS(svgNS, "circle");
+          circle.setAttribute("cx", cx);
+          circle.setAttribute("cy", cy);
+          circle.setAttribute("r", r);
+          circle.setAttribute("fill", `url(#${gradId})`);
+          circle.setAttribute(
+            "opacity",
+            (0.35 + Math.random() * 0.4).toFixed(2),
+          );
+          const dx = (25 + Math.random() * 60) * (Math.random() > 0.5 ? 1 : -1);
+          const dy = (25 + Math.random() * 60) * (Math.random() > 0.5 ? 1 : -1);
+          const dur = 10 + Math.random() * 16;
+          const anim = document.createElementNS(svgNS, "animateTransform");
+          anim.setAttribute("attributeName", "transform");
+          anim.setAttribute("type", "translate");
+          anim.setAttribute("values", `0,0; ${dx},${dy}; 0,0`);
+          anim.setAttribute("dur", `${dur}s`);
+          anim.setAttribute("repeatCount", "indefinite");
+          anim.setAttribute("calcMode", "spline");
+          anim.setAttribute("keySplines", "0.42 0 0.58 1; 0.42 0 0.58 1");
+          circle.appendChild(anim);
+          svg.appendChild(circle);
+          orbs.push({ cx, cy, r, el: circle });
+        }
+        for (let i = 0; i < orbs.length; i++) {
+          for (let j = i + 1; j < orbs.length; j++) {
+            const dx = orbs[i].cx - orbs[j].cx;
+            const dy = orbs[i].cy - orbs[j].cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 250) {
+              const line = document.createElementNS(svgNS, "line");
+              line.setAttribute("x1", orbs[i].cx);
+              line.setAttribute("y1", orbs[i].cy);
+              line.setAttribute("x2", orbs[j].cx);
+              line.setAttribute("y2", orbs[j].cy);
+              line.setAttribute("stroke", "rgba(120,140,190,0.08)");
+              line.setAttribute("stroke-width", "1");
+              line.setAttribute("stroke-linecap", "round");
+              const animOp = document.createElementNS(svgNS, "animate");
+              animOp.setAttribute("attributeName", "opacity");
+              animOp.setAttribute("values", "0.3;0.8;0.3");
+              animOp.setAttribute("dur", `${4 + Math.random() * 4}s`);
+              animOp.setAttribute("repeatCount", "indefinite");
+              line.appendChild(animOp);
+              svg.insertBefore(line, svg.firstChild);
+            }
+          }
+        }
+        const ringPositions = [
+          { cx: w * 0.85, cy: h * 0.08, r: 200 },
+          { cx: w * 0.1, cy: h * 0.92, r: 150 },
+          { cx: w * 0.5, cy: h * 0.5, r: 280 },
+        ];
+        ringPositions.forEach((pos, idx) => {
+          const ring = document.createElementNS(svgNS, "circle");
+          ring.setAttribute("cx", pos.cx);
+          ring.setAttribute("cy", pos.cy);
+          ring.setAttribute("r", pos.r);
+          ring.setAttribute("fill", "none");
+          ring.setAttribute("stroke", `rgba(120,140,190,${0.1 + idx * 0.04})`);
+          ring.setAttribute("stroke-width", "1.5");
+          ring.setAttribute(
+            "stroke-dasharray",
+            `${pos.r * 0.8} ${pos.r * 0.4}`,
+          );
+          ring.style.animation = `ringPulse ${10 + idx * 3}s ease-in-out infinite`;
+          ring.style.animationDelay = `${idx * 2}s`;
+          ring.style.transformOrigin = `${pos.cx}px ${pos.cy}px`;
+          svg.appendChild(ring);
+        });
+      })();
+
+      (function createParticles() {
+        const container = document.body;
+        const particleCount = 12;
+        for (let i = 0; i < particleCount; i++) {
+          const p = document.createElement("div");
+          p.className = "particle";
+          const size = 2 + Math.random() * 4;
+          p.style.width = size + "px";
+          p.style.height = size + "px";
+          p.style.left = Math.random() * 100 + "vw";
+          p.style.top = "100vh";
+          p.style.animationDuration = 15 + Math.random() * 20 + "s";
+          p.style.animationDelay = Math.random() * 10 + "s";
+          p.style.opacity = 0.3 + Math.random() * 0.4;
+          container.appendChild(p);
+        }
+      })();
+
+      (function makeBackgroundMoveable() {
+        const bg = document.getElementById("bgLayer");
+        const orbLayer = document.getElementById("orbLayer");
+        const blobs = document.querySelectorAll(".blob");
+        let targetX = 0,
+          targetY = 0;
+        let currentX = 0,
+          currentY = 0;
+        function lerp(start, end, factor) {
+          return start + (end - start) * factor;
+        }
+        function updateParallax() {
+          currentX = lerp(currentX, targetX, 0.08);
+          currentY = lerp(currentY, targetY, 0.08);
+          const bgMove = 18;
+          const orbMove = 32;
+          const blobMove = 12;
+          bg.style.transform = `translate(${-currentX * bgMove}px, ${-currentY * bgMove}px)`;
+          orbLayer.style.transform = `translate(${-currentX * orbMove}px, ${-currentY * orbMove}px)`;
+          blobs.forEach((blob, i) => {
+            const factor = (i + 1) * 0.5;
+            blob.style.transform = `translate(${-currentX * blobMove * factor}px, ${-currentY * blobMove * factor}px) scale(${1 + Math.sin(Date.now() / 3000 + i) * 0.05})`;
+          });
+          requestAnimationFrame(updateParallax);
+        }
+        updateParallax();
+        window.addEventListener("mousemove", (e) => {
+          targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+          targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+        window.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            if (!t) return;
+            targetX = (t.clientX / window.innerWidth - 0.5) * 2;
+            targetY = (t.clientY / window.innerHeight - 0.5) * 2;
+          },
+          { passive: true },
+        );
+        window.addEventListener("touchend", () => {
+          targetX = 0;
+          targetY = 0;
+        });
+        if (window.DeviceOrientationEvent) {
+          window.addEventListener(
+            "deviceorientation",
+            (e) => {
+              if (e.gamma === null || e.beta === null) return;
+              targetX = Math.max(-1, Math.min(1, e.gamma / 30));
+              targetY = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+            },
+            true,
+          );
+        }
+      })();
+
+      (function initTilt() {
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+          card.addEventListener("mousemove", (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+            const dx = (x - cx) / cx;
+            const dy = (y - cy) / cy;
+            card.style.transform = `perspective(800px) rotateX(${-dy * 4}deg) rotateY(${dx * 4}deg) translateY(-3px) scale(1.01)`;
+          });
+          card.addEventListener("mouseleave", () => {
+            card.style.transform = "";
+          });
+        });
+      })();
+
+      /* ========== SPLASH (CARE+) LOGIC ========== */
+      (function () {
+        "use strict";
+        const splash = document.getElementById("splashPage");
+        const progressBar = document.getElementById("progressBarSplash");
+        const logoMark = document.getElementById("logoMarkSplash");
+        const canvas = document.getElementById("constellation");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
+
+        const particles = [];
+        const particleCount = 50;
+        const connectionDistance = 120;
+        const mouseDistance = 150;
+        let mouse = { x: null, y: null };
+
+        class Particle {
+          constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.size = Math.random() * 2.5 + 1;
+            this.opacity = Math.random() * 0.5 + 0.2;
+            this.color = this.getColor();
+          }
+          getColor() {
+            const colors = [
+              "rgba(0, 180, 216,",
+              "rgba(255, 107, 107,",
+              "rgba(199, 125, 255,",
+              "rgba(144, 224, 239,",
+              "rgba(255, 209, 102,",
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+          }
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            if (mouse.x != null) {
+              const dx = mouse.x - this.x;
+              const dy = mouse.y - this.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < mouseDistance) {
+                const force = (mouseDistance - dist) / mouseDistance;
+                this.vx += (dx / dist) * force * 0.02;
+                this.vy += (dy / dist) * force * 0.02;
+              }
+            }
+            this.vx *= 0.99;
+            this.vy *= 0.99;
+          }
+          draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color + this.opacity + ")";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+            ctx.fillStyle = this.color + this.opacity * 0.15 + ")";
+            ctx.fill();
+          }
+        }
+
+        for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+        function drawConnections() {
+          for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < connectionDistance) {
+                const opacity = (1 - dist / connectionDistance) * 0.2;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(0, 180, 216, ${opacity})`;
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+              }
+            }
+          }
+        }
+
+        function animateParticles() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach((p) => {
+            p.update();
+            p.draw();
+          });
+          drawConnections();
+          requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        window.addEventListener("mousemove", (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+        window.addEventListener("mouseleave", () => {
+          mouse.x = null;
+          mouse.y = null;
+        });
+        window.addEventListener(
+          "touchmove",
+          (e) => {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+          },
+          { passive: true },
+        );
+        window.addEventListener("touchend", () => {
+          mouse.x = null;
+          mouse.y = null;
+        });
+
+        if (logoMark) {
+          document.addEventListener("mousemove", (e) => {
+            const rect = logoMark.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const rotateX = (e.clientY - centerY) / 30;
+            const rotateY = (centerX - e.clientX) / 30;
+            logoMark.style.transform = `perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+          });
+          document.addEventListener("mouseleave", () => {
+            logoMark.style.transform =
+              "perspective(500px) rotateX(0) rotateY(0) scale(1)";
+          });
+        }
+
+        const start = performance.now();
+        const duration = 4500;
+        function updateProgress(now) {
+          const elapsed = now - start;
+          const pct = Math.min(100, (elapsed / duration) * 100);
+          progressBar.style.width = pct + "%";
+          if (pct < 100) requestAnimationFrame(updateProgress);
+        }
+        requestAnimationFrame(updateProgress);
+
+        document.addEventListener("touchmove", (e) => e.preventDefault(), {
+          passive: false,
+        });
+
+        setTimeout(() => {
+          splash.classList.add("exit");
+          const nalam = document.getElementById("nalamContainer");
+          nalam.classList.remove("nalam-hidden");
+          nalam.classList.add("nalam-visible");
+          setTimeout(() => {
+            splash.style.display = "none";
+          }, 850);
+        }, 4700);
+      })();
+
+      /* ========== DOCTOR LOGIN ========== */
+      function verifyDoctorLogin() {
+        const name = document.getElementById("doctorName").value;
+        const pass = document.getElementById("doctorPassword").value;
+        const errorEl = document.getElementById("loginError");
+        if (pass === "2121") {
+          errorEl.style.display = "none";
+          document.getElementById("welcomeDoctorName").textContent =
+            "Dr. " + (name || "Nalam");
+          document.getElementById("doctorAvatar").textContent = (
+            name ? name[0] : "N"
+          ).toUpperCase();
+          showView("doctor");
+        } else {
+          errorEl.style.display = "block";
+          document
+            .getElementById("doctor-login-view")
+            .querySelector(".inner-box")
+            .animate(
+              [
+                { transform: "translateX(0)" },
+                { transform: "translateX(-8px)" },
+                { transform: "translateX(8px)" },
+                { transform: "translateX(0)" },
+              ],
+              { duration: 400 },
+            );
+        }
+      }
+      function logoutDoctor() {
+        document.getElementById("doctorName").value = "";
+        document.getElementById("doctorPassword").value = "";
+        document.getElementById("loginError").style.display = "none";
+        showView("landing");
+      }
+
+      /* ========== APPOINTMENTS & PATIENTS ========== */
+      let todayAppointments = [
+        {
+          id: 1,
+          time: "01:30",
+          period: "PM",
+          name: "Meera Jasmine",
+          age: "28",
+          phone: "9876543210",
+          reason: "High fever for 2 days with body pain.",
+          tag: "Urgent",
+          tagColor: "tag-orange",
+        },
+      ];
+      let recentPatients = [];
+      let patientArchives = [];
+
+      function formatDate(d = new Date()) {
+        return d.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+      function generateMockArchives() {
+        const names = [
+          "Arjun K",
+          "Bala S",
+          "Chitra R",
+          "Deepak V",
+          "Eswar M",
+          "Fathima N",
+          "Ganesh P",
+          "Hema L",
+          "Indira K",
+          "Jack T",
+          "Kavitha S",
+          "Lokesh R",
+          "Malini G",
+          "Naveen P",
+          "Omprakash S",
+          "Pavithra V",
+          "Qadir A",
+          "Ramya K",
+          "Suresh T",
+          "Thara M",
+          "Uday R",
+          "Vani S",
+          "Wilson J",
+          "Xavier P",
+          "Yamini K",
+        ];
+        const prescriptions = [
+          "Dolo 650mg, Pan D",
+          "Amoxicillin, Azithral",
+          "Cough Syrup, Vitamin C",
+          "Omez, Digene",
+          "Paracetamol, Cetrizine",
+        ];
+        const times = [
+          "09:45 AM",
+          "10:20 AM",
+          "11:15 AM",
+          "12:30 PM",
+          "02:00 PM",
+          "04:15 PM",
+          "06:30 PM",
+        ];
+        for (let i = 0; i < 25; i++) {
+          const name = names[i];
+          const date = formatDate(new Date(Date.now() - i * 86400000));
+          const time = times[i % times.length];
+          const presc = prescriptions[i % prescriptions.length];
+          const initials = name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .slice(0, 2);
+          const colors = [
+            "chip-orange",
+            "chip-purple",
+            "chip-cyan",
+            "chip-green",
+          ];
+          patientArchives.push({
+            name,
+            date,
+            time,
+            prescription: presc,
+            initials,
+            color: colors[i % colors.length],
+          });
+        }
+      }
+      function renderAppointments() {
+        const container = document.getElementById("appointmentsContainer");
+        if (!container) return;
+        if (todayAppointments.length === 0) {
+          container.innerHTML =
+            '<p style="text-align:center;color:var(--sub);font-size:.8rem;padding:20px;">No appointments today</p>';
+          return;
+        }
+        container.innerHTML = todayAppointments
+          .map(
+            (app, idx) => `
+      <div class="appointment-card" onclick="showAppointmentDetails('${app.name}','${app.age}','${app.reason}','${app.phone}')">
+        <div class="time-col">
+          <span class="time">${app.time}</span>
+          <span class="period">${app.period}</span>
+          ${idx < todayAppointments.length - 1 ? '<div class="line"></div>' : '<div style="width:2px;flex:1;"></div>'}
+        </div>
+        <div class="app-info" style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <h4>${app.name}</h4>
+            <span class="tag ${app.tagColor}">${app.tag}</span>
+          </div>
+          <p>Age: ${app.age} &bull; ${app.phone}</p>
+          <p style="margin-top:4px;opacity:.7;">${app.reason}</p>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+      function renderRecentPatients(dataToRender) {
+        const container = document.getElementById("recentPatientsContainer");
+        if (!container) return;
+        const data = dataToRender || recentPatients.slice(0, 8);
+        if (data.length === 0) {
+          container.innerHTML =
+            '<p style="font-size:.75rem;color:var(--sub);white-space:nowrap;padding:10px;">No recent patients</p>';
+          return;
+        }
+        container.innerHTML = data
+          .map(
+            (p) => `
+      <div class="patient-chip" onclick="showAppointmentDetails('${p.name}','-','${p.prescription || "Regular Consultation"}','N/A')">
+        <div class="initials ${p.color}">${p.initials}</div>
+        <p style="font-size:.75rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</p>
+        <p style="font-size:.6rem;color:var(--sub);margin-top:2px;">${p.date}</p>
+      </div>
+    `,
+          )
+          .join("");
+      }
+      function filterDashboard() {
+        const query = document
+          .getElementById("patientSearchInput")
+          .value.trim()
+          .toLowerCase();
+        const defaultContent = document.getElementById(
+          "dashboard-default-content",
+        );
+        const searchResults = document.getElementById(
+          "dashboard-search-results",
+        );
+        if (patientArchives.length === 0) generateMockArchives();
+        if (query === "") {
+          defaultContent.classList.remove("view-hidden");
+          searchResults.classList.add("view-hidden");
+          renderRecentPatients();
+          return;
+        }
+        defaultContent.classList.add("view-hidden");
+        searchResults.classList.remove("view-hidden");
+        const matches = [
+          ...recentPatients.map((p) => ({
+            ...p,
+            time: p.time || "Visit Recorded",
+          })),
+          ...patientArchives,
+        ].filter((p) => p.name.toLowerCase().includes(query));
+        renderSearchResults(matches);
+      }
+      function renderSearchResults(matches) {
+        const list = document.getElementById("searchResultsList");
+        const empty = document.getElementById("search-empty-state");
+        const count = document.getElementById("searchResultCount");
+        count.textContent = matches.length + " Matches";
+        if (matches.length === 0) {
+          list.innerHTML = "";
+          empty.classList.remove("view-hidden");
+          return;
+        }
+        empty.classList.add("view-hidden");
+        list.innerHTML = matches
+          .map(
+            (p) => `
+      <div class="appointment-card" style="cursor:default;">
+        <div class="time-col"><div class="initials ${p.color}" style="width:40px;height:40px;border-radius:12px;font-size:.8rem;">${p.initials}</div></div>
+        <div class="app-info" style="flex:1;">
+          <div style="display:flex;justify-content:space-between;"><h4>${p.name}</h4><span style="font-size:.6rem;color:var(--orange-2);font-weight:700;">${p.date}</span></div>
+          <p>${p.time || "Visit Recorded"}</p>
+          <p style="margin-top:4px;font-style:italic;opacity:.8;">"${p.prescription || "Regular Consultation"}"</p>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      /* ========== PRESCRIPTION ========== */
+      let currentPrescription = [];
+      let selectedFrequency = "1-0-1";
+      const mockMedicines = [
+        { name: "Paracetamol", sub: "500mg Tablet" },
+        { name: "Dolo 650", sub: "650mg Tablet" },
+        { name: "Azithromycin", sub: "500mg Tablet" },
+        { name: "Amoxicillin", sub: "250mg Capsule" },
+        { name: "Cetirizine", sub: "10mg Tablet" },
+        { name: "Ibuprofen", sub: "400mg Tablet" },
+        { name: "Omeprazole", sub: "20mg Capsule" },
+        { name: "Pan D", sub: "40mg Capsule" },
+        { name: "Cough Syrup", sub: "100ml Bottle" },
+        { name: "Vitamin C", sub: "500mg Tablet" },
+        { name: "Digene", sub: "Tablet" },
+        { name: "Metformin", sub: "500mg Tablet" },
+        { name: "Amlodipine", sub: "5mg Tablet" },
+        { name: "Atorvastatin", sub: "10mg Tablet" },
+        { name: "Pantoprazole", sub: "40mg Tablet" },
+      ];
+      function searchMedicines(query) {
+        const resultsEl = document.getElementById("medicineSearchResults");
+        if (!query || query.length < 2) {
+          resultsEl.style.display = "none";
+          return;
+        }
+        const filtered = mockMedicines
+          .filter((m) => m.name.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 8);
+        if (filtered.length > 0) {
+          resultsEl.innerHTML = filtered
+            .map(
+              (m) => `
+        <div class="search-dropdown-item" onclick="selectMedicine('${m.name.replace(/'/g, "\'")}','${m.sub}')">
+          <strong>${m.name}</strong> <span style="color:var(--sub);font-size:.75rem;">${m.sub}</span>
+        </div>
+      `,
+            )
+            .join("");
+          resultsEl.style.display = "block";
+        } else {
+          resultsEl.style.display = "none";
+        }
+      }
+      function selectMedicine(name, sub) {
+        document.getElementById("medSearchInput").value = name;
+        document.getElementById("medDosage").value = sub;
+        document.getElementById("medicineSearchResults").style.display = "none";
+        document.getElementById("medDuration").focus();
+      }
+      function setFrequency(freq, btn) {
+        selectedFrequency = freq;
+        document
+          .querySelectorAll(".freq-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      }
+      function addMedicineToList() {
+        const name = document.getElementById("medSearchInput").value;
+        const dosage = document.getElementById("medDosage").value;
+        const duration = document.getElementById("medDuration").value;
+        const instructions = document.getElementById("medInstructions").value;
+        if (!name) {
+          alert("Please enter a medicine name");
+          return;
+        }
+        currentPrescription.push({
+          name,
+          dosage,
+          duration,
+          frequency: selectedFrequency,
+          instructions,
+        });
+        updatePrescriptionUI();
+        document.getElementById("medSearchInput").value = "";
+        document.getElementById("medDosage").value = "";
+        document.getElementById("medDuration").value = "";
+        document.getElementById("medSearchInput").focus();
+      }
+      function updatePrescriptionUI() {
+        const listEl = document.getElementById("activePrescriptionList");
+        const countEl = document.getElementById("prescItemCount");
+        countEl.textContent = currentPrescription.length + " Items";
+        listEl.innerHTML = currentPrescription
+          .map(
+            (m, idx) => `
+      <div class="med-card">
+        <div>
+          <h4>${m.name} <span style="font-weight:500;color:var(--sub);">${m.dosage}</span></h4>
+          <p>${m.frequency} &bull; ${m.duration} &bull; ${m.instructions}</p>
+        </div>
+        <button class="delete-btn" onclick="deleteMedicine(${idx})">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    `,
+          )
+          .join("");
+      }
+      function deleteMedicine(idx) {
+        currentPrescription.splice(idx, 1);
+        updatePrescriptionUI();
+      }
+      function showPrescriptionVisual() {
+        document.getElementById("v-patientName").textContent =
+          document.getElementById("prescPatientName").value || "Guest Patient";
+        document.getElementById("v-ageSex").textContent =
+          (document.getElementById("prescPatientAge").value || "-") + " Yrs";
+        document.getElementById("v-date").textContent = formatDate();
+        document.getElementById("v-diagnosis").textContent =
+          document.getElementById("prescDiagnosis").value ||
+          "No notes provided.";
+        const listEl = document.getElementById("v-medicineList");
+        if (currentPrescription.length === 0) {
+          listEl.innerHTML =
+            '<p style="color:var(--sub);font-size:.8rem;text-align:center;padding:10px;">No medicines added</p>';
+        } else {
+          listEl.innerHTML = currentPrescription
+            .map(
+              (m, idx) => `
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.05);">
+        <div><p style="font-weight:700;font-size:.85rem;">${idx + 1}. ${m.name}</p><p style="font-size:.7rem;color:var(--sub);">${m.dosage}</p></div>
+        <div style="text-align:right;"><p style="font-weight:700;color:#2563eb;font-size:.8rem;">${m.frequency}</p><p style="font-size:.65rem;color:var(--sub);">${m.duration} &bull; ${m.instructions}</p></div>
+      </div>
+    `,
+            )
+            .join("");
+        }
+        document
+          .getElementById("prescription-visual-modal")
+          .classList.add("active");
+      }
+      function closePrescriptionVisual() {
+        document
+          .getElementById("prescription-visual-modal")
+          .classList.remove("active");
+      }
+      function generateWhatsAppMessage(phone = "") {
+        if (currentPrescription.length === 0) {
+          alert("Please add at least one medicine.");
+          return "";
+        }
+        const patientName =
+          document.getElementById("prescPatientName").value || "Patient";
+        const age = document.getElementById("prescPatientAge").value || "-";
+        const diagnosis =
+          document.getElementById("prescDiagnosis").value ||
+          "General Consultation";
+        let text = `*NALAM CLINIC PRESCRIPTION*\n\n👤 Patient: ${patientName}\n📅 Date: ${formatDate()}\n🎂 Age: ${age} Yrs\n📝 Diagnosis: ${diagnosis}\n\n💊 Medicines:\n`;
+        currentPrescription.forEach((m, idx) => {
+          text += `${idx + 1}. *${m.name}* (${m.dosage})\n   ⏰ ${m.frequency} | ⏳ ${m.duration} | ℹ️ ${m.instructions}\n\n`;
+        });
+        text += `✨ Get well soon!\n📍 123 Antony St., Salavakkam | 9025276457`;
+        return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+      }
+      function openShareModal() {
+        document
+          .getElementById("whatsapp-number-modal")
+          .classList.add("active");
+        document.getElementById("whatsappNumberInput").value = "";
+        document.getElementById("whatsappNumberInput").focus();
+      }
+      function closeShareModal() {
+        document
+          .getElementById("whatsapp-number-modal")
+          .classList.remove("active");
+      }
+      function sendPrescriptionToWhatsApp() {
+        let phone = document
+          .getElementById("whatsappNumberInput")
+          .value.replace(/\D/g, "");
+        if (!phone || phone.length !== 10) {
+          alert("Please enter a valid 10-digit mobile number");
+          return;
+        }
+        const url = generateWhatsAppMessage("91" + phone);
+        if (url) {
+          window.open(url, "_blank");
+          resetPrescriptionState();
+        }
+      }
+      function resetPrescriptionState() {
+        const name =
+          document.getElementById("prescPatientName").value || "Guest Patient";
+        if (name !== "Guest Patient") {
+          const initials = name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2);
+          const colors = [
+            "chip-orange",
+            "chip-purple",
+            "chip-cyan",
+            "chip-green",
+          ];
+          recentPatients.unshift({
+            name,
+            date: formatDate(),
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            initials,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            prescription:
+              currentPrescription.map((m) => m.name).join(", ") ||
+              "General Consultation",
+          });
+        }
+        closeShareModal();
+        closePrescriptionVisual();
+        currentPrescription = [];
+        updatePrescriptionUI();
+        document.getElementById("prescPatientName").value = "";
+        document.getElementById("prescPatientAge").value = "";
+        document.getElementById("prescDiagnosis").value = "";
+        document.getElementById("medSearchInput").value = "";
+        document.getElementById("medDosage").value = "";
+        document.getElementById("medDuration").value = "";
+        showView("doctor");
+      }
+
+      /* ========== PATIENT FORM ========== */
+      function submitPatientForm() {
+        const name = document.getElementById("reg-name").value;
+        const age = document.getElementById("reg-age").value;
+        const phone = document.getElementById("reg-phone").value;
+        const reason =
+          document.getElementById("reg-reason").value || "General Consultation";
+        if (!name || !age || !phone) {
+          alert("Please fill all required fields");
+          return;
+        }
+        const now = new Date();
+        const hours = now.getHours() % 12 || 12;
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const time = `${hours}:${minutes}`;
+        const period = now.getHours() >= 12 ? "PM" : "AM";
+        todayAppointments.unshift({
+          id: Date.now(),
+          time,
+          period,
+          name,
+          age,
+          phone,
+          reason,
+          tag: "Pending",
+          tagColor: "tag-blue",
+        });
+        renderAppointments();
+        document.getElementById("success-modal").classList.add("active");
+        document.getElementById("reg-name").value = "";
+        document.getElementById("reg-age").value = "";
+        document.getElementById("reg-phone").value = "";
+        document.getElementById("reg-reason").value = "";
+      }
+      function closeModal() {
+        document.getElementById("success-modal").classList.remove("active");
+        showView("landing");
+      }
+
+      /* ========== MODAL FUNCTIONS ========== */
+      function showAppointmentDetails(name, age, reason, phone) {
+        document.getElementById("det-name").textContent = name;
+        document.getElementById("det-age").textContent = "Age: " + age + " Yrs";
+        document.getElementById("det-phone").textContent = "Phone: " + phone;
+        document.getElementById("det-reason").textContent = reason;
+        document
+          .getElementById("appointment-details-modal")
+          .classList.add("active");
+      }
+      function closeAppointmentDetails() {
+        document
+          .getElementById("appointment-details-modal")
+          .classList.remove("active");
+      }
+      function openSeeAllModal() {
+        renderSeeAllList();
+        document
+          .getElementById("see-all-patients-modal")
+          .classList.add("active");
+      }
+      function closeSeeAllModal() {
+        document
+          .getElementById("see-all-patients-modal")
+          .classList.remove("active");
+      }
+      function renderSeeAllList() {
+        const container = document.getElementById("seeAllPatientsList");
+        const data = recentPatients.length
+          ? recentPatients
+          : patientArchives.slice(0, 10);
+        container.innerHTML = data
+          .map(
+            (p) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.4);margin-bottom:10px;">
+        <div class="initials ${p.color}" style="width:40px;height:40px;border-radius:12px;font-size:.8rem;">${p.initials}</div>
+        <div style="flex:1;"><p style="font-weight:700;font-size:.85rem;">${p.name}</p><p style="font-size:.65rem;color:var(--sub);">${p.date}</p></div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sub)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    `,
+          )
+          .join("");
+      }
+      function openScheduleModal() {
+        renderScheduleList();
+        document
+          .getElementById("schedule-management-modal")
+          .classList.add("active");
+      }
+      function closeScheduleModal() {
+        document
+          .getElementById("schedule-management-modal")
+          .classList.remove("active");
+      }
+      function renderScheduleList() {
+        const container = document.getElementById("scheduleManagementList");
+        if (todayAppointments.length === 0) {
+          container.innerHTML =
+            '<p style="text-align:center;color:var(--sub);padding:20px;">No pending appointments</p>';
+          return;
+        }
+        container.innerHTML = todayAppointments
+          .map(
+            (app) => `
+      <div style="padding:16px;border-radius:20px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.4);margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="initials chip-orange" style="width:36px;height:36px;border-radius:10px;font-size:.7rem;">${app.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2)}</div>
+            <div><p style="font-weight:700;font-size:.85rem;">${app.name}</p><p style="font-size:.65rem;color:var(--sub);">${app.phone}</p></div>
+          </div>
+          <span style="font-size:.6rem;background:rgba(242,96,58,.1);color:#F2603A;padding:4px 10px;border-radius:100px;font-weight:700;">${app.time} ${app.period}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button onclick="handleVisit(${app.id})" class="glass-btn" style="padding:10px;font-size:.75rem;background:linear-gradient(135deg,#3b82f6,#60a5fa);box-shadow:0 4px 12px rgba(59,130,246,.2);">Visit (SMS)</button>
+          <button onclick="handleVisited(${app.id})" class="glass-btn" style="padding:10px;font-size:.75rem;background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 4px 12px rgba(16,185,129,.2);">Visited</button>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+      let currentVisitPatientId = null;
+      function handleVisit(id) {
+        currentVisitPatientId = id;
+        document.getElementById("visit-time-modal").classList.add("active");
+        document.getElementById("visitTimeInput").value = "";
+        document.getElementById("confirmVisitBtn").onclick = () => {
+          const timeStr =
+            document.getElementById("visitTimeInput").value.trim() ||
+            "AVAILABLE";
+          const patient = todayAppointments.find((a) => a.id == id);
+          if (patient && patient.phone) {
+            const msg = `வணக்கம், நலம் கிளினிக்கிற்கு ${timeStr}-க்கு வரவும். (Hello, please come to Nalam Clinic at ${timeStr}.)`;
+            window.location.href = `sms:${patient.phone}?body=${encodeURIComponent(msg)}`;
+          } else {
+            alert("Patient phone number missing.");
+          }
+          closeVisitTimeModal();
+        };
+      }
+      function handleVisited(id) {
+        const idx = todayAppointments.findIndex((a) => a.id == id);
+        if (idx !== -1) {
+          const patient = todayAppointments[idx];
+          patientArchives.unshift({
+            name: patient.name,
+            date: formatDate(),
+            time: patient.time + " " + patient.period,
+            prescription: patient.reason || "General Consultation",
+            initials: patient.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2),
+            color: "chip-green",
+          });
+          todayAppointments.splice(idx, 1);
+          renderAppointments();
+          renderScheduleList();
+        }
+      }
+      function closeVisitTimeModal() {
+        document.getElementById("visit-time-modal").classList.remove("active");
+      }
+      function openPatientsFullList() {
+        renderPatientHistoryList();
+        document
+          .getElementById("patients-full-list-modal")
+          .classList.add("active");
+      }
+      function closePatientsFullList() {
+        document
+          .getElementById("patients-full-list-modal")
+          .classList.remove("active");
+      }
+      function renderPatientHistoryList() {
+        const container = document.getElementById("fullPatientsHistoryList");
+        if (patientArchives.length === 0) generateMockArchives();
+        const integrated = [
+          ...todayAppointments.map((app) => ({
+            ...app,
+            initials: app.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2),
+            color: "chip-orange",
+            date: formatDate(),
+            status: "WAITING",
+            prescription: app.reason || "General Consultation",
+          })),
+          ...patientArchives,
+        ];
+        container.innerHTML = integrated
+          .map(
+            (p) => `
+      <div style="padding:14px;border-radius:16px;border:1.5px solid var(--card-border);background:rgba(255,255,255,.4);margin-bottom:10px;display:flex;gap:12px;align-items:start;">
+        <div class="initials ${p.color}" style="width:40px;height:40px;border-radius:12px;font-size:.8rem;flex-shrink:0;">${p.initials}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <p style="font-weight:700;font-size:.85rem;">${p.name}</p>
+            <span style="font-size:.55rem;background:rgba(242,96,58,.1);color:#F2603A;padding:3px 8px;border-radius:100px;font-weight:700;">${p.date}</span>
+          </div>
+          <p style="font-size:.65rem;color:var(--sub);margin-top:2px;">${p.time || ""} ${p.period || ""}</p>
+          <div style="margin-top:8px;padding:10px;border-radius:12px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.5);">
+            <p style="font-size:.6rem;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:2px;">${p.status === "WAITING" ? "Reason" : "Prescription"}</p>
+            <p style="font-size:.75rem;font-weight:500;opacity:.9;">"${p.prescription}"</p>
+          </div>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      /* ========== INIT ========== */
+      window.onload = () => {
+        generateMockArchives();
+        document.getElementById("prescDate").value = new Date()
+          .toISOString()
+          .split("T")[0];
+      };
+    </script>
+  </body>
+</html>

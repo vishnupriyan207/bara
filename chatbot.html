@@ -1,0 +1,2537 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      viewport-fit=cover, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>Nalam Super AI Bot</title>
+
+    <style>
+      /* =========================================================
+   NALAM AI CHATBOT - COMPLETE STANDALONE CSS
+   ========================================================= */
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100%;
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Arial,
+          sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(0, 200, 220, 0.15),
+            transparent 35%
+          ),
+          radial-gradient(
+            circle at 85% 75%,
+            rgba(130, 90, 255, 0.14),
+            transparent 35%
+          ),
+          linear-gradient(135deg, #e0f7fa, #eef8ff, #f5f0ff);
+      }
+
+      /* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+      .background-orb {
+        position: fixed;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        filter: blur(50px);
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 0;
+        animation: floatingOrb 8s ease-in-out infinite;
+      }
+
+      .orb-one {
+        top: 5%;
+        left: -80px;
+        background: #5ee7f2;
+      }
+
+      .orb-two {
+        right: -90px;
+        bottom: 5%;
+        background: #b69cff;
+        animation-delay: -3s;
+      }
+
+      @keyframes floatingOrb {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+          transform: translate3d(20px, -25px, 0);
+        }
+      }
+
+      /* =========================================================
+   FLOATING ROBOT BUTTON
+   ========================================================= */
+
+      #robot-head-fab {
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+
+        width: 68px;
+        height: 68px;
+
+        border: none;
+        border-radius: 50%;
+
+        background: linear-gradient(135deg, #ffffff, #e8fbff);
+
+        box-shadow:
+          0 12px 35px rgba(22, 120, 150, 0.22),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+        z-index: 9998;
+
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+
+      #robot-head-fab:hover {
+        transform: translateY(-5px) scale(1.04);
+
+        box-shadow:
+          0 18px 42px rgba(22, 120, 150, 0.3),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.9);
+      }
+
+      #robot-head-fab:active {
+        transform: scale(0.94);
+      }
+
+      .robot-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      /* Notification dot */
+
+      .robot-notification {
+        position: absolute;
+        right: 1px;
+        top: 1px;
+
+        width: 15px;
+        height: 15px;
+
+        border-radius: 50%;
+        background: #20c997;
+
+        border: 3px solid white;
+
+        animation: notificationPulse 1.8s infinite;
+      }
+
+      @keyframes notificationPulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(32, 201, 151, 0.45);
+        }
+
+        70% {
+          box-shadow: 0 0 0 9px rgba(32, 201, 151, 0);
+        }
+
+        100% {
+          box-shadow: 0 0 0 0 rgba(32, 201, 151, 0);
+        }
+      }
+
+      /* =========================================================
+   CHATBOT MODAL
+   ========================================================= */
+
+      #chatbot-modal {
+        position: fixed;
+
+        inset: 0;
+
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+
+        max-width: none;
+        min-height: 0;
+
+        background: rgba(255, 255, 255, 0.94);
+
+        border: none;
+        border-radius: 0;
+
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+
+        transform: none;
+
+        z-index: 9999;
+      }
+
+      /* PHONE VIEW */
+      @media (max-width: 600px) {
+        #chatbot-modal {
+          inset: 0;
+
+          width: 100%;
+          height: 100dvh;
+
+          border-radius: 0;
+
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+
+      /* =========================================================
+   BOT HEADER
+   ========================================================= */
+
+      .bot-header {
+        position: relative;
+
+        min-height: 76px;
+
+        padding: 12px 14px 12px 15px;
+
+        display: flex;
+        align-items: center;
+
+        background: linear-gradient(
+          135deg,
+          rgba(226, 250, 255, 0.98),
+          rgba(242, 239, 255, 0.98)
+        );
+
+        border-bottom: 1px solid rgba(40, 150, 170, 0.1);
+      }
+
+      .bot-header-avatar {
+        width: 47px;
+        height: 47px;
+
+        flex-shrink: 0;
+
+        border-radius: 15px;
+
+        background: linear-gradient(135deg, #ffffff, #dff9ff);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-shadow: 0 7px 18px rgba(30, 130, 160, 0.14);
+      }
+
+      .bot-header-avatar svg {
+        width: 31px;
+        height: 31px;
+      }
+
+      .bot-header-info {
+        min-width: 0;
+        flex: 1;
+        margin-left: 11px;
+      }
+
+      .bot-header-title {
+        margin: 0;
+
+        color: #173c4c;
+
+        font-size: 16px;
+        font-weight: 800;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bot-header-subtitle {
+        margin-top: 3px;
+
+        color: #64818c;
+
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .bot-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .bot-header-button {
+        width: 34px;
+        height: 34px;
+
+        border: none;
+        border-radius: 10px;
+
+        background: rgba(255, 255, 255, 0.65);
+
+        color: #48717e;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+
+      .bot-header-button:hover {
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-1px);
+      }
+
+      .bot-header-button svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      /* =========================================================
+   HISTORY DRAWER
+   ========================================================= */
+
+      #chat-history-drawer {
+        position: absolute;
+
+        inset: 0;
+
+        background: rgba(248, 253, 255, 0.98);
+
+        z-index: 20;
+
+        display: flex;
+        flex-direction: column;
+
+        transform: translateX(-100%);
+
+        transition: transform 0.28s ease;
+      }
+
+      #chat-history-drawer.active {
+        transform: translateX(0);
+      }
+
+      .history-header {
+        min-height: 67px;
+
+        display: flex;
+        align-items: center;
+
+        padding: 12px 14px;
+
+        border-bottom: 1px solid rgba(30, 100, 120, 0.1);
+
+        background: linear-gradient(135deg, #e8fbff, #f4f0ff);
+      }
+
+      .history-back {
+        width: 36px;
+        height: 36px;
+
+        border: none;
+        border-radius: 10px;
+
+        background: white;
+
+        cursor: pointer;
+
+        color: #456b78;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .history-title {
+        flex: 1;
+
+        margin-left: 10px;
+
+        font-size: 15px;
+        font-weight: 800;
+
+        color: #183d4c;
+      }
+
+      .clear-history-button {
+        border: none;
+        background: transparent;
+
+        color: #e05d6f;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        cursor: pointer;
+      }
+
+      #history-items-container {
+        flex: 1;
+
+        overflow-y: auto;
+
+        padding: 12px;
+      }
+
+      .history-empty {
+        text-align: center;
+
+        padding: 45px 20px;
+
+        color: #77919b;
+
+        font-size: 13px;
+      }
+
+      .history-item {
+        position: relative;
+
+        padding: 13px 38px 13px 13px;
+
+        margin-bottom: 9px;
+
+        border-radius: 14px;
+
+        background: white;
+
+        border: 1px solid rgba(30, 130, 150, 0.09);
+
+        cursor: pointer;
+
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .history-item:hover {
+        transform: translateY(-2px);
+
+        box-shadow: 0 8px 22px rgba(30, 100, 120, 0.09);
+      }
+
+      .history-item-title {
+        color: #244956;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .history-item-date {
+        color: #8aa1aa;
+
+        font-size: 10px;
+
+        margin-top: 5px;
+      }
+
+      .history-delete {
+        position: absolute;
+
+        right: 9px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 28px;
+        height: 28px;
+
+        border: none;
+        border-radius: 8px;
+
+        background: #fff0f2;
+
+        color: #dc596b;
+
+        cursor: pointer;
+      }
+
+      /* =========================================================
+   MESSAGES
+   ========================================================= */
+
+      .bot-messages-container {
+        flex: 1;
+
+        min-height: 0;
+
+        overflow-y: auto;
+
+        padding: 17px;
+
+        display: flex;
+        flex-direction: column;
+
+        gap: 12px;
+
+        scroll-behavior: smooth;
+      }
+
+      .bot-messages-container::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .bot-messages-container::-webkit-scrollbar-thumb {
+        background: rgba(55, 130, 150, 0.18);
+        border-radius: 10px;
+      }
+
+      /* User */
+
+      .user-message-wrapper {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .user-message {
+        max-width: 82%;
+
+        padding: 11px 14px;
+
+        border-radius: 17px 17px 5px 17px;
+
+        background: linear-gradient(135deg, #25c7d9, #529be8);
+
+        color: white;
+
+        font-size: 13px;
+        line-height: 1.5;
+
+        box-shadow: 0 7px 18px rgba(40, 150, 190, 0.15);
+
+        word-wrap: break-word;
+      }
+
+      /* Bot */
+
+      .bot-message-wrapper {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .bot-small-avatar {
+        flex-shrink: 0;
+
+        width: 29px;
+        height: 29px;
+
+        border-radius: 10px;
+
+        background: linear-gradient(135deg, #e1fbff, #f0eaff);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bot-small-avatar svg {
+        width: 19px;
+        height: 19px;
+      }
+
+      .bot-card {
+        max-width: calc(100% - 37px);
+
+        padding: 14px 15px;
+
+        background: white;
+
+        border: 1px solid rgba(45, 125, 145, 0.09);
+
+        border-radius: 4px 19px 19px 19px;
+
+        box-shadow: 0 7px 22px rgba(30, 100, 120, 0.07);
+
+        color: #385662;
+
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .bot-card p {
+        margin: 0 0 9px 0;
+      }
+
+      .bot-card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .bot-greeting {
+        color: #1c4655;
+
+        font-weight: 800;
+
+        font-size: 14px;
+
+        margin-bottom: 7px !important;
+      }
+
+      .bot-section-title {
+        color: #254d5a;
+
+        font-weight: 800;
+
+        margin-top: 11px;
+        margin-bottom: 5px;
+      }
+
+      .bot-warning {
+        margin-top: 10px;
+
+        padding: 10px 11px;
+
+        border-radius: 11px;
+
+        background: #fff7ed;
+
+        border: 1px solid #ffe0bb;
+
+        color: #a05c17;
+
+        font-size: 12px;
+      }
+
+      .bot-danger {
+        margin-top: 10px;
+
+        padding: 11px;
+
+        border-radius: 11px;
+
+        background: #fff0f2;
+
+        border: 1px solid #ffd2d8;
+
+        color: #b73d51;
+
+        font-size: 12px;
+
+        font-weight: 700;
+      }
+
+      .bot-questions {
+        margin: 8px 0 0 18px;
+
+        padding: 0;
+
+        color: #456673;
+      }
+
+      .bot-questions li {
+        margin-bottom: 5px;
+      }
+
+      /* Appointment CTA */
+
+      .appointment-cta {
+        margin-top: 13px;
+
+        width: 100%;
+
+        border: none;
+
+        border-radius: 12px;
+
+        padding: 11px 13px;
+
+        background: linear-gradient(135deg, #20b9c8, #6b8fe9);
+
+        color: white;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        cursor: pointer;
+
+        box-shadow: 0 7px 18px rgba(54, 137, 190, 0.18);
+
+        transition: transform 0.2s ease;
+      }
+
+      .appointment-cta:hover {
+        transform: translateY(-1px);
+      }
+
+      .appointment-cta:active {
+        transform: scale(0.98);
+      }
+
+      /* =========================================================
+   TYPING INDICATOR
+   ========================================================= */
+
+      .typing-wrapper {
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 8px;
+      }
+
+      .typing-indicator {
+        padding: 12px 14px;
+
+        background: white;
+
+        border-radius: 4px 18px 18px 18px;
+
+        box-shadow: 0 6px 20px rgba(30, 100, 120, 0.07);
+
+        display: flex;
+        gap: 4px;
+      }
+
+      .typing-dot {
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: #69aeba;
+
+        animation: typingBounce 1.2s infinite ease-in-out;
+      }
+
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes typingBounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.45;
+        }
+
+        30% {
+          transform: translateY(-5px);
+          opacity: 1;
+        }
+      }
+
+      /* =========================================================
+   QUICK SYMPTOMS
+   ========================================================= */
+
+      .quick-symptoms-bar {
+        flex-shrink: 0;
+
+        display: flex;
+        gap: 7px;
+
+        padding: 9px 13px;
+
+        overflow-x: auto;
+
+        background: rgba(246, 252, 254, 0.95);
+
+        border-top: 1px solid rgba(40, 130, 150, 0.07);
+
+        scrollbar-width: none;
+      }
+
+      .quick-symptoms-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .quick-symptom {
+        flex-shrink: 0;
+
+        padding: 8px 11px;
+
+        border: 1px solid rgba(50, 145, 160, 0.12);
+
+        border-radius: 20px;
+
+        background: white;
+
+        color: #47717e;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+      }
+
+      .quick-symptom:hover {
+        background: #f0fcff;
+        transform: translateY(-1px);
+      }
+
+      /* =========================================================
+   INPUT
+   ========================================================= */
+
+      .bot-input-area {
+        flex-shrink: 0;
+
+        padding: 10px 12px calc(12px + env(safe-area-inset-bottom)) 12px;
+
+        background: rgba(255, 255, 255, 0.97);
+
+        border-top: 1px solid rgba(40, 130, 150, 0.08);
+
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #chat-input-text {
+        flex: 1;
+
+        min-width: 0;
+
+        height: 43px;
+
+        padding: 0 14px;
+
+        border: 1px solid rgba(55, 135, 150, 0.15);
+
+        border-radius: 15px;
+
+        outline: none;
+
+        background: #f8fcfd;
+
+        color: #294b56;
+
+        font-size: 13px;
+
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      #chat-input-text:focus {
+        border-color: rgba(36, 180, 195, 0.45);
+
+        box-shadow: 0 0 0 3px rgba(40, 190, 205, 0.08);
+      }
+
+      #chat-input-text::placeholder {
+        color: #91a9b1;
+      }
+
+      #chat-send-button {
+        width: 43px;
+        height: 43px;
+
+        flex-shrink: 0;
+
+        border: none;
+        border-radius: 14px;
+
+        background: linear-gradient(135deg, #25c5d3, #628fe7);
+
+        color: white;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        box-shadow: 0 6px 17px rgba(55, 145, 190, 0.18);
+
+        transition: transform 0.2s ease;
+      }
+
+      #chat-send-button:hover {
+        transform: translateY(-1px);
+      }
+
+      #chat-send-button:active {
+        transform: scale(0.94);
+      }
+
+      #chat-send-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      #chat-send-button svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* =========================================================
+   APPOINTMENT POPUP
+   ========================================================= */
+
+      #appointment-modal {
+        position: fixed;
+
+        inset: 0;
+
+        background: rgba(20, 55, 65, 0.35);
+
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        z-index: 10001;
+      }
+
+      #appointment-modal.active {
+        display: flex;
+      }
+
+      .appointment-box {
+        width: 100%;
+        max-width: 380px;
+
+        padding: 25px;
+
+        border-radius: 23px;
+
+        background: white;
+
+        box-shadow: 0 25px 70px rgba(20, 70, 90, 0.25);
+
+        text-align: center;
+      }
+
+      .appointment-icon {
+        width: 58px;
+        height: 58px;
+
+        margin: 0 auto 13px;
+
+        border-radius: 17px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #e8fbff;
+      }
+
+      .appointment-box h3 {
+        margin: 0 0 8px;
+
+        color: #214a57;
+
+        font-size: 18px;
+      }
+
+      .appointment-box p {
+        margin: 0 0 17px;
+
+        color: #69828b;
+
+        font-size: 13px;
+
+        line-height: 1.55;
+      }
+
+      .appointment-close {
+        width: 100%;
+
+        padding: 11px;
+
+        border: none;
+
+        border-radius: 12px;
+
+        background: linear-gradient(135deg, #25c5d3, #628fe7);
+
+        color: white;
+
+        font-weight: 800;
+
+        cursor: pointer;
+      }
+
+      /* =========================================================
+   MOBILE
+   ========================================================= */
+
+      @media (max-width: 600px) {
+        #robot-head-fab {
+          width: 60px;
+          height: 60px;
+
+          right: 16px;
+          bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+
+        .robot-icon {
+          width: 38px;
+          height: 38px;
+        }
+
+        #chatbot-modal {
+          left: 8px;
+          right: 8px;
+
+          bottom: calc(8px + env(safe-area-inset-bottom));
+
+          width: auto;
+          max-width: none;
+
+          height: calc(100dvh - 16px - env(safe-area-inset-bottom));
+
+          min-height: 0;
+
+          border-radius: 22px;
+        }
+
+        .bot-header {
+          min-height: 70px;
+        }
+
+        .bot-header-title {
+          font-size: 14px;
+        }
+
+        .bot-header-subtitle {
+          font-size: 10px;
+        }
+
+        .bot-header-button {
+          width: 31px;
+          height: 31px;
+        }
+
+        .bot-messages-container {
+          padding: 13px;
+        }
+
+        .bot-card {
+          font-size: 12.5px;
+          max-width: calc(100% - 35px);
+        }
+
+        .user-message {
+          max-width: 85%;
+          font-size: 12.5px;
+        }
+
+        .quick-symptoms-bar {
+          padding: 8px 10px;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .bot-header-info {
+          margin-left: 7px;
+        }
+
+        .bot-header-actions {
+          gap: 1px;
+        }
+
+        .bot-header-button {
+          width: 28px;
+          height: 28px;
+        }
+
+        .bot-header-avatar {
+          width: 42px;
+          height: 42px;
+        }
+
+        .bot-header-title {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- =======================================================
+     BACKGROUND
+     ======================================================= -->
+
+    <div class="background-orb orb-one"></div>
+    <div class="background-orb orb-two"></div>
+
+    <!-- =======================================================
+     FLOATING ROBOT BUTTON
+     ======================================================= -->
+
+    <!-- =======================================================
+     CHATBOT
+     ======================================================= -->
+
+    <div id="chatbot-modal">
+      <!-- HEADER -->
+
+      <div class="bot-header">
+        <div class="bot-header-avatar">
+          <svg viewBox="0 0 100 100" fill="none">
+            <rect
+              x="18"
+              y="25"
+              width="64"
+              height="52"
+              rx="18"
+              fill="#E7FAFD"
+              stroke="#3DB8C7"
+              stroke-width="4"
+            />
+
+            <rect
+              x="28"
+              y="38"
+              width="44"
+              height="25"
+              rx="10"
+              fill="white"
+              stroke="#73C9D5"
+              stroke-width="3"
+            />
+
+            <circle cx="40" cy="50" r="4" fill="#35B8C8" />
+
+            <circle cx="60" cy="50" r="4" fill="#35B8C8" />
+
+            <path
+              d="M40 57C45 61 55 61 60 57"
+              stroke="#35B8C8"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+
+            <path
+              d="M50 25V16"
+              stroke="#3DB8C7"
+              stroke-width="4"
+              stroke-linecap="round"
+            />
+
+            <circle cx="50" cy="13" r="4" fill="#8B7DE8" />
+          </svg>
+        </div>
+
+        <div class="bot-header-info">
+          <div class="bot-header-title">Nalam Super AI Bot</div>
+
+          <div class="bot-header-subtitle">24/7 Medical Care Assistant</div>
+        </div>
+
+        <div class="bot-header-actions">
+          <!-- History -->
+
+          <button
+            class="bot-header-button"
+            onclick="toggleChatHistory()"
+            title="Chat history"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M3 12a9 9 0 1 0 3-6.7" />
+
+              <path d="M3 4v6h6" />
+
+              <path d="M12 7v5l3 2" />
+            </svg>
+          </button>
+
+          <!-- New Chat -->
+
+          <button
+            class="bot-header-button"
+            onclick="startNewChatSession()"
+            title="New chat"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+
+          <!-- Close -->
+
+          <button
+            class="bot-header-button"
+            onclick="goBackToPatient()"
+            title="Back to Patient"
+            aria-label="Back to Patient"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 6l12 12" />
+              <path d="M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===================================================
+         HISTORY DRAWER
+         =================================================== -->
+
+      <div id="chat-history-drawer">
+        <div class="history-header">
+          <button class="history-back" onclick="toggleChatHistory()">
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <div class="history-title">Chat History</div>
+
+          <button class="clear-history-button" onclick="clearAllChatHistory()">
+            Clear All
+          </button>
+        </div>
+
+        <div id="history-items-container"></div>
+      </div>
+
+      <!-- ===================================================
+         MESSAGES
+         =================================================== -->
+
+      <div class="bot-messages-container" id="chat-messages"></div>
+
+      <!-- ===================================================
+         QUICK SYMPTOMS
+         =================================================== -->
+
+      <div class="quick-symptoms-bar">
+        <button
+          class="quick-symptom"
+          onclick="quickSendSymptom('I am having headache.')"
+        >
+          🤕 Headache
+        </button>
+
+        <button
+          class="quick-symptom"
+          onclick="quickSendSymptom('I have chest pain.')"
+        >
+          🫀 Chest Pain
+        </button>
+
+        <button
+          class="quick-symptom"
+          onclick="quickSendSymptom('I have high fever.')"
+        >
+          🤒 Fever
+        </button>
+
+        <button
+          class="quick-symptom"
+          onclick="quickSendSymptom('I have severe stomach pain.')"
+        >
+          🤢 Stomach Pain
+        </button>
+
+        <button
+          class="quick-symptom"
+          onclick="quickSendSymptom('I am having continuous cough.')"
+        >
+          😷 Cough
+        </button>
+      </div>
+
+      <!-- ===================================================
+         INPUT
+         =================================================== -->
+
+      <div class="bot-input-area">
+        <input
+          id="chat-input-text"
+          type="text"
+          autocomplete="off"
+          placeholder="Describe your symptoms..."
+          onkeydown="handleChatKeyPress(event)"
+        />
+
+        <button
+          id="chat-send-button"
+          onclick="sendUserChatMessage()"
+          aria-label="Send message"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M22 2L11 13" />
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- =======================================================
+     APPOINTMENT POPUP
+     ======================================================= -->
+
+    <div id="appointment-modal">
+      <div class="appointment-box">
+        <div class="appointment-icon">
+          <svg
+            width="31"
+            height="31"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#28afc1"
+            stroke-width="2"
+          >
+            <rect x="3" y="4" width="18" height="17" rx="3" />
+
+            <path d="M16 2v4" />
+            <path d="M8 2v4" />
+            <path d="M3 10h18" />
+
+            <path d="M8 14h2" />
+            <path d="M14 14h2" />
+            <path d="M8 18h2" />
+            <path d="M14 18h2" />
+          </svg>
+        </div>
+
+        <h3>Medical Consultation</h3>
+
+        <p id="appointment-message">
+          Based on your symptoms, a medical consultation may be appropriate.
+          Please contact Nalam Clinic for an appointment.
+        </p>
+
+        <button class="appointment-close" onclick="closeAppointmentModal()">
+          Close
+        </button>
+      </div>
+    </div>
+
+    <script>
+      /* =========================================================
+   NALAM AI CHATBOT
+   COMPLETE JAVASCRIPT
+   ========================================================= */
+
+      /* =========================================================
+   GROQ CONFIGURATION
+   ========================================================= */
+
+      /*
+   FOR TESTING:
+
+   Put your Groq API key here:
+
+   const GROQ_API_KEY = "gsk_xxxxxxxxxxxxxxxxx";
+
+   IMPORTANT:
+   This exposes the API key in browser source code.
+
+   For production, move this API request to your backend.
+*/
+
+      const GROQ_API_KEY = "";
+
+      /* =========================================================
+   GLOBAL VARIABLES
+   ========================================================= */
+
+      let isWaitingForGroq = false;
+
+      let chatHistory = [];
+
+      let currentSessionId = null;
+
+      /* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+      document.addEventListener("DOMContentLoaded", function () {
+        initNalamChatbot();
+      });
+
+      /* =========================================================
+   INITIAL CHATBOT
+   ========================================================= */
+
+      function initNalamChatbot() {
+        loadChatHistoryFromStorage();
+
+        if (chatHistory.length === 0) {
+          createNewSession();
+        } else {
+          currentSessionId = chatHistory[0].id;
+
+          renderCurrentSessionMessages();
+        }
+      }
+
+      /* =========================================================
+   OPEN / CLOSE CHATBOT
+   ========================================================= */
+
+      function closeNalamChatbot() {
+        const modal = document.getElementById("chatbot-modal");
+
+        modal.classList.remove("active");
+
+        const drawer = document.getElementById("chat-history-drawer");
+
+        drawer.classList.remove("active");
+      }
+
+      /* =========================================================
+       CHAT HISTORY
+       ========================================================= */
+
+      function toggleChatHistory() {
+        const drawer = document.getElementById("chat-history-drawer");
+
+        drawer.classList.toggle("active");
+
+        if (drawer.classList.contains("active")) {
+          renderHistoryDrawerList();
+        }
+      }
+
+      function loadChatHistoryFromStorage() {
+        try {
+          const saved = localStorage.getItem("nalam_chat_history");
+
+          if (saved) {
+            chatHistory = JSON.parse(saved);
+          } else {
+            chatHistory = [];
+          }
+        } catch (error) {
+          console.error("Unable to load chat history:", error);
+
+          chatHistory = [];
+        }
+      }
+
+      function saveChatHistoryToStorage() {
+        try {
+          localStorage.setItem(
+            "nalam_chat_history",
+            JSON.stringify(chatHistory),
+          );
+        } catch (error) {
+          console.error("Unable to save chat history:", error);
+        }
+      }
+
+      function getSessionById(id) {
+        return chatHistory.find(function (session) {
+          return session.id === id;
+        });
+      }
+
+      /* =========================================================
+   CREATE NEW SESSION
+   ========================================================= */
+
+      function createNewSession() {
+        const session = {
+          id: "session_" + Date.now(),
+
+          timestamp: new Date().toLocaleString(),
+
+          title: "New Medical Consultation",
+
+          messages: [
+            {
+              sender: "bot",
+
+              type: "welcome",
+
+              content: {
+                sympathy: "Hello! 👋 I am Nalam Clinic's Super AI Assistant.",
+
+                guidance:
+                  "Describe any medical symptom or question you have. I will evaluate the information carefully and provide general guidance.",
+              },
+            },
+          ],
+        };
+
+        chatHistory.unshift(session);
+
+        currentSessionId = session.id;
+
+        saveChatHistoryToStorage();
+
+        renderCurrentSessionMessages();
+      }
+
+      /* =========================================================
+   START NEW CHAT
+   ========================================================= */
+
+      function startNewChatSession() {
+        createNewSession();
+
+        const drawer = document.getElementById("chat-history-drawer");
+
+        drawer.classList.remove("active");
+      }
+
+      /* =========================================================
+   SELECT HISTORY
+   ========================================================= */
+
+      function selectHistorySession(sessionId) {
+        const session = getSessionById(sessionId);
+
+        if (!session) {
+          return;
+        }
+
+        currentSessionId = sessionId;
+
+        renderCurrentSessionMessages();
+
+        const drawer = document.getElementById("chat-history-drawer");
+
+        drawer.classList.remove("active");
+      }
+
+      /*X*/
+
+      function goBackToPatient() {
+        window.location.href = "index.html#patient";
+      }
+
+      /* =========================================================
+   DELETE HISTORY SESSION
+   ========================================================= */
+
+      function deleteHistorySession(event, sessionId) {
+        event.stopPropagation();
+
+        chatHistory = chatHistory.filter(function (session) {
+          return session.id !== sessionId;
+        });
+
+        if (currentSessionId === sessionId) {
+          if (chatHistory.length > 0) {
+            currentSessionId = chatHistory[0].id;
+          } else {
+            createNewSession();
+
+            return;
+          }
+        }
+
+        saveChatHistoryToStorage();
+
+        renderHistoryDrawerList();
+
+        renderCurrentSessionMessages();
+      }
+
+      /* =========================================================
+   CLEAR ALL HISTORY
+   ========================================================= */
+
+      function clearAllChatHistory() {
+        const shouldClear = confirm("Clear all Nalam chatbot history?");
+
+        if (!shouldClear) {
+          return;
+        }
+
+        chatHistory = [];
+
+        localStorage.removeItem("nalam_chat_history");
+
+        createNewSession();
+
+        renderHistoryDrawerList();
+      }
+
+      /* =========================================================
+   RENDER HISTORY
+   ========================================================= */
+
+      function renderHistoryDrawerList() {
+        const container = document.getElementById("history-items-container");
+
+        if (!container) {
+          return;
+        }
+
+        container.innerHTML = "";
+
+        if (chatHistory.length === 0) {
+          container.innerHTML = `
+            <div class="history-empty">
+                No previous consultations yet.
+            </div>
+        `;
+
+          return;
+        }
+
+        chatHistory.forEach(function (session) {
+          const firstUserMessage = session.messages.find(function (message) {
+            return message.sender === "user";
+          });
+
+          let title = session.title || "Medical Consultation";
+
+          if (firstUserMessage && firstUserMessage.content) {
+            title = firstUserMessage.content.substring(0, 45);
+          }
+
+          const item = document.createElement("div");
+
+          item.className = "history-item";
+
+          item.onclick = function () {
+            selectHistorySession(session.id);
+          };
+
+          item.innerHTML = `
+
+                <div class="history-item-title">
+                    ${escapeHtml(title)}
+                </div>
+
+                <div class="history-item-date">
+                    ${escapeHtml(session.timestamp || "")}
+                </div>
+
+                <button
+                    class="history-delete"
+                    onclick="deleteHistorySession(event, '${session.id}')"
+                    aria-label="Delete chat">
+
+                    ×
+
+                </button>
+
+            `;
+
+          container.appendChild(item);
+        });
+      }
+
+      /* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+      function escapeHtml(str) {
+        if (str === null || str === undefined) {
+          return "";
+        }
+
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      /* =========================================================
+   RENDER CURRENT SESSION
+   ========================================================= */
+
+      function renderCurrentSessionMessages() {
+        const container = document.getElementById("chat-messages");
+
+        if (!container) {
+          return;
+        }
+
+        container.innerHTML = "";
+
+        const session = getSessionById(currentSessionId);
+
+        if (!session) {
+          return;
+        }
+
+        session.messages.forEach(function (message) {
+          if (message.sender === "user") {
+            renderUserMessage(message.content);
+          } else {
+            renderBotMessageCard(message);
+          }
+        });
+
+        scrollChatToBottom();
+      }
+
+      /* =========================================================
+   RENDER USER MESSAGE
+   ========================================================= */
+
+      function renderUserMessage(text) {
+        const container = document.getElementById("chat-messages");
+
+        const wrapper = document.createElement("div");
+
+        wrapper.className = "user-message-wrapper";
+
+        const bubble = document.createElement("div");
+
+        bubble.className = "user-message";
+
+        bubble.textContent = text;
+
+        wrapper.appendChild(bubble);
+
+        container.appendChild(wrapper);
+      }
+
+      /* =========================================================
+   RENDER BOT MESSAGE
+   ========================================================= */
+
+      function renderBotMessageCard(msg) {
+        const container = document.getElementById("chat-messages");
+
+        const wrapper = document.createElement("div");
+
+        wrapper.className = "bot-message-wrapper";
+
+        const avatar = document.createElement("div");
+
+        avatar.className = "bot-small-avatar";
+
+        avatar.innerHTML = `
+
+        <svg
+            viewBox="0 0 100 100"
+            fill="none">
+
+            <rect
+                x="18"
+                y="25"
+                width="64"
+                height="52"
+                rx="18"
+                fill="#E7FAFD"
+                stroke="#3DB8C7"
+                stroke-width="5"/>
+
+            <circle
+                cx="40"
+                cy="50"
+                r="5"
+                fill="#35B8C8"/>
+
+            <circle
+                cx="60"
+                cy="50"
+                r="5"
+                fill="#35B8C8"/>
+
+            <path
+                d="M40 60C45 64 55 64 60 60"
+                stroke="#35B8C8"
+                stroke-width="4"
+                stroke-linecap="round"/>
+
+        </svg>
+
+    `;
+
+        const card = document.createElement("div");
+
+        card.className = "bot-card";
+
+        const content = msg.content || {};
+
+        /* Welcome */
+
+        if (msg.type === "welcome") {
+          if (content.sympathy) {
+            card.innerHTML += `
+                <p class="bot-greeting">
+                    ${escapeHtml(content.sympathy)}
+                </p>
+            `;
+          }
+
+          if (content.guidance) {
+            card.innerHTML += `
+                <p>
+                    ${formatBotText(content.guidance)}
+                </p>
+            `;
+          }
+        } else {
+          if (content.sympathy) {
+            card.innerHTML += `
+                <p class="bot-greeting">
+                    ${formatBotText(content.sympathy)}
+                </p>
+            `;
+          }
+
+          if (content.questions && Array.isArray(content.questions)) {
+            card.innerHTML += `
+                <div class="bot-section-title">
+                    A few questions:
+                </div>
+
+                <ol class="bot-questions">
+                    ${content.questions
+                      .map((q) => `<li>${formatBotText(q)}</li>`)
+                      .join("")}
+                </ol>
+            `;
+          }
+
+          if (content.guidance) {
+            card.innerHTML += `
+                <div class="bot-section-title">
+                    General guidance
+                </div>
+
+                <p>
+                    ${formatBotText(content.guidance)}
+                </p>
+            `;
+          }
+
+          if (content.warning) {
+            const warningClass = content.highRisk
+              ? "bot-danger"
+              : "bot-warning";
+
+            card.innerHTML += `
+                <div class="${warningClass}">
+                    ⚠️
+                    ${formatBotText(content.warning)}
+                </div>
+            `;
+          }
+
+          if (content.showAppointmentCTA) {
+            const symptom = content.symptomTag || "your symptoms";
+
+            card.innerHTML += `
+
+                <button
+                    class="appointment-cta"
+                    onclick="bookAppointment('${escapeJsString(symptom)}')">
+
+                    📅 Discuss an Appointment
+
+                </button>
+
+            `;
+          }
+        }
+
+        wrapper.appendChild(avatar);
+
+        wrapper.appendChild(card);
+
+        container.appendChild(wrapper);
+      }
+
+      /* =========================================================
+   FORMAT BOT TEXT
+   ========================================================= */
+
+      function formatBotText(text) {
+        if (text === null || text === undefined) {
+          return "";
+        }
+
+        let safe = escapeHtml(String(text));
+
+        /*
+       Basic markdown-like formatting.
+    */
+
+        safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+        safe = safe.replace(/\n/g, "<br>");
+
+        return safe;
+      }
+
+      /* =========================================================
+   ESCAPE JAVASCRIPT STRING
+   ========================================================= */
+
+      function escapeJsString(value) {
+        return String(value)
+          .replace(/\\/g, "\\\\")
+          .replace(/'/g, "\\'")
+          .replace(/"/g, '\\"');
+      }
+
+      /* =========================================================
+   SCROLL
+   ========================================================= */
+
+      function scrollChatToBottom() {
+        const container = document.getElementById("chat-messages");
+
+        if (!container) {
+          return;
+        }
+
+        setTimeout(function () {
+          container.scrollTop = container.scrollHeight;
+        }, 50);
+      }
+
+      /* =========================================================
+   ENTER KEY
+   ========================================================= */
+
+      function handleChatKeyPress(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+
+          sendUserChatMessage();
+        }
+      }
+
+      /* =========================================================
+   QUICK SYMPTOM
+   ========================================================= */
+
+      function quickSendSymptom(text) {
+        const input = document.getElementById("chat-input-text");
+
+        input.value = text;
+
+        sendUserChatMessage();
+      }
+
+      /* =========================================================
+   SEND USER MESSAGE
+   ========================================================= */
+
+      async function sendUserChatMessage() {
+        if (isWaitingForGroq) {
+          return;
+        }
+
+        const input = document.getElementById("chat-input-text");
+
+        const text = input.value.trim();
+
+        if (!text) {
+          return;
+        }
+
+        const session = getSessionById(currentSessionId);
+
+        if (!session) {
+          return;
+        }
+
+        /* Add user message */
+
+        session.messages.push({
+          sender: "user",
+
+          content: text,
+
+          timestamp: new Date().toISOString(),
+        });
+
+        /*
+       Give session a useful title.
+    */
+
+        const userMessages = session.messages.filter(
+          (m) => m.sender === "user",
+        );
+
+        if (userMessages.length === 1) {
+          session.title = text.substring(0, 45);
+        }
+
+        saveChatHistoryToStorage();
+
+        renderCurrentSessionMessages();
+
+        input.value = "";
+
+        showTypingIndicator();
+
+        isWaitingForGroq = true;
+
+        const sendButton = document.getElementById("chat-send-button");
+
+        sendButton.disabled = true;
+
+        try {
+          const response = await generateMedicalResponse(
+            text,
+            session.messages,
+          );
+
+          removeTypingIndicator();
+
+          session.messages.push({
+            sender: "bot",
+
+            type: "medical",
+
+            content: response,
+
+            timestamp: new Date().toISOString(),
+          });
+
+          saveChatHistoryToStorage();
+
+          renderCurrentSessionMessages();
+        } catch (error) {
+          console.error("Chatbot error:", error);
+
+          removeTypingIndicator();
+
+          const fallback = generateFallbackResponse(text, session.messages);
+
+          session.messages.push({
+            sender: "bot",
+
+            type: "medical",
+
+            content: fallback,
+
+            timestamp: new Date().toISOString(),
+          });
+
+          saveChatHistoryToStorage();
+
+          renderCurrentSessionMessages();
+        }
+
+        isWaitingForGroq = false;
+
+        sendButton.disabled = false;
+
+        input.focus();
+      }
+
+      /* =========================================================
+   TYPING INDICATOR
+   ========================================================= */
+
+      function showTypingIndicator() {
+        removeTypingIndicator();
+
+        const container = document.getElementById("chat-messages");
+
+        const wrapper = document.createElement("div");
+
+        wrapper.id = "typing-indicator-wrapper";
+
+        wrapper.className = "typing-wrapper";
+
+        wrapper.innerHTML = `
+
+        <div class="bot-small-avatar">
+
+            <svg
+                viewBox="0 0 100 100"
+                fill="none">
+
+                <rect
+                    x="18"
+                    y="25"
+                    width="64"
+                    height="52"
+                    rx="18"
+                    fill="#E7FAFD"
+                    stroke="#3DB8C7"
+                    stroke-width="5"/>
+
+                <circle
+                    cx="40"
+                    cy="50"
+                    r="5"
+                    fill="#35B8C8"/>
+
+                <circle
+                    cx="60"
+                    cy="50"
+                    r="5"
+                    fill="#35B8C8"/>
+
+            </svg>
+
+        </div>
+
+        <div class="typing-indicator">
+
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+
+        </div>
+
+    `;
+
+        container.appendChild(wrapper);
+
+        scrollChatToBottom();
+      }
+
+      function removeTypingIndicator() {
+        const indicator = document.getElementById("typing-indicator-wrapper");
+
+        if (indicator) {
+          indicator.remove();
+        }
+      }
+
+      /* =========================================================
+   GROQ MEDICAL AI
+   ========================================================= */
+
+      async function generateMedicalResponse(userQuery, messageHistory) {
+        const text = userQuery.trim();
+
+        const normalized = text.toLowerCase();
+
+        /*
+     =====================================================
+     NORMAL GREETINGS
+     =====================================================
+    */
+
+        if (
+          normalized === "hi" ||
+          normalized === "hello" ||
+          normalized === "hey" ||
+          normalized === "hii" ||
+          normalized === "hiii" ||
+          normalized === "good morning" ||
+          normalized === "good afternoon" ||
+          normalized === "good evening"
+        ) {
+          return {
+            sympathy:
+              "Hello! 👋 I'm Nalam Super AI Bot. How can I help you today?",
+
+            questions: [],
+
+            guidance:
+              "You can tell me about a symptom, health concern, or medical question.",
+
+            warning: "",
+
+            highRisk: false,
+
+            symptomTag: "general",
+
+            showAppointmentCTA: false,
+          };
+        }
+
+        /*
+     =====================================================
+     PREPARE CHAT HISTORY FOR GROQ
+     =====================================================
+    */
+
+        const messages = messageHistory.slice(-10).map(function (message) {
+          if (message.sender === "user") {
+            return {
+              role: "user",
+
+              content: String(message.content),
+            };
+          }
+
+          let assistantContent = message.content;
+
+          if (typeof assistantContent !== "string") {
+            assistantContent = JSON.stringify(assistantContent);
+          }
+
+          return {
+            role: "assistant",
+
+            content: assistantContent,
+          };
+        });
+
+        /*
+     =====================================================
+     CALL YOUR SERVER
+     =====================================================
+    */
+
+        console.log("Sending request to /api/chat...");
+
+        const response = await fetch("/api/chat", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            messages: messages,
+          }),
+        });
+
+        /*
+     =====================================================
+     CHECK SERVER RESPONSE
+     =====================================================
+    */
+
+        const data = await response.json();
+
+        console.log("API response:", data);
+
+        if (!response.ok) {
+          throw new Error(data?.error || "API request failed");
+        }
+
+        if (!data.response) {
+          throw new Error("No response received from Groq");
+        }
+
+        /*
+     =====================================================
+     RETURN GROQ RESPONSE
+     =====================================================
+    */
+
+        return {
+          sympathy: "Nalam AI:",
+
+          questions: [],
+
+          guidance: data.response,
+
+          warning: "",
+
+          highRisk: false,
+
+          symptomTag: "your symptoms",
+
+          showAppointmentCTA: false,
+        };
+      }
+
+      /* =========================================================
+   FALLBACK MEDICAL RESPONSES
+   ========================================================= */
+
+      function generateFallbackResponse(query, messageHistory) {
+        const text = query.toLowerCase();
+
+        /*
+       FEVER
+    */
+
+        if (text.includes("fever") || text.includes("temperature")) {
+          return {
+            sympathy:
+              "I'm sorry you're dealing with a fever. Let's check a few details.",
+
+            questions: [
+              "What is your measured temperature and how long have you had the fever?",
+
+              "Do you also have breathing difficulty, severe weakness, confusion, persistent vomiting, rash, or severe pain?",
+            ],
+
+            guidance:
+              "Rest, drink fluids regularly, and monitor your temperature. Keep track of whether the fever is improving or worsening.",
+
+            warning:
+              "Seek prompt medical attention if the fever is very high, lasts several days, or occurs with confusion, breathing difficulty, severe weakness, persistent vomiting, or other concerning symptoms.",
+
+            highRisk: false,
+
+            symptomTag: "fever",
+
+            showAppointmentCTA: true,
+          };
+        }
+
+        /*
+       STOMACH / ABDOMINAL PAIN
+    */
+
+        if (
+          text.includes("stomach") ||
+          text.includes("belly") ||
+          text.includes("abdominal")
+        ) {
+          return {
+            sympathy:
+              "I'm sorry you're having stomach or abdominal discomfort. Let's understand it better.",
+
+            questions: [
+              "Where exactly is the pain, and when did it begin?",
+
+              "Do you have vomiting, fever, diarrhea, constipation, blood in your stool, or difficulty keeping fluids down?",
+            ],
+
+            guidance:
+              "Drink fluids as tolerated, rest, and avoid foods that clearly make the discomfort worse. Monitor whether the pain is improving or becoming more severe.",
+
+            warning:
+              "Get urgent medical care for sudden or severe abdominal pain, a rigid or swollen abdomen, vomiting blood, black or bloody stools, fainting, or severe weakness.",
+
+            highRisk: false,
+
+            symptomTag: "stomach pain",
+
+            showAppointmentCTA: true,
+          };
+        }
+
+        /*
+       COUGH
+    */
+
+        if (text.includes("cough")) {
+          return {
+            sympathy:
+              "I'm sorry you're dealing with a cough. Let's check how severe it is.",
+
+            questions: [
+              "How long have you had the cough, and is it dry or producing mucus?",
+
+              "Do you have fever, chest pain, breathing difficulty, wheezing, or blood when coughing?",
+            ],
+
+            guidance:
+              "Stay hydrated and rest. Avoid smoke and other irritants. Monitor whether the cough is improving or worsening.",
+
+            warning:
+              "Seek urgent care if you have significant breathing difficulty, severe chest pain, coughing up blood, confusion, fainting, or rapidly worsening symptoms.",
+
+            highRisk: false,
+
+            symptomTag: "cough",
+
+            showAppointmentCTA: true,
+          };
+        }
+
+        /*
+       CHEST PAIN
+    */
+
+        if (text.includes("chest")) {
+          return {
+            sympathy: "Chest symptoms deserve careful attention.",
+
+            questions: [
+              "Is the chest pain severe, pressure-like, persistent, or spreading to your arm, jaw, back, or shoulder?",
+
+              "Are you experiencing breathing difficulty, sweating, dizziness, fainting, nausea, or severe weakness?",
+            ],
+
+            guidance:
+              "Avoid strenuous activity and do not ignore unexplained or persistent chest pain.",
+
+            warning:
+              "Severe, persistent, pressure-like chest pain or chest pain with breathing difficulty, sweating, fainting, or severe weakness requires emergency medical attention.",
+
+            highRisk: true,
+
+            symptomTag: "chest pain",
+
+            showAppointmentCTA: true,
+          };
+        }
+
+        /*
+       HEADACHE
+    */
+
+        if (text.includes("head")) {
+          return {
+            sympathy:
+              "I'm sorry you're experiencing head pain. Let's understand the symptom better.",
+
+            questions: [
+              "When did it start and how severe is it?",
+
+              "Do you have vomiting, vision changes, weakness, fever, neck stiffness, confusion, or fainting?",
+            ],
+
+            guidance:
+              "For mild symptoms, consider rest, hydration, sleep, and taking a break from screens. Monitor whether the symptoms improve.",
+
+            warning:
+              "Seek urgent care for a sudden extremely severe headache or headache with confusion, fainting, seizures, weakness, severe vision changes, or difficulty speaking.",
+
+            highRisk: false,
+
+            symptomTag: "headache",
+
+            showAppointmentCTA: true,
+          };
+        }
+
+        /*
+       GENERAL RESPONSE
+    */
+
+        return {
+          sympathy:
+            "I'm sorry you're not feeling well. I can help you organize the information about your symptoms.",
+
+          questions: [
+            "When did the symptom start, and is it getting better or worse?",
+
+            "Are you experiencing any other symptoms such as fever, severe pain, vomiting, breathing difficulty, dizziness, or weakness?",
+          ],
+
+          guidance:
+            "Rest, stay hydrated, and avoid activities that make your symptoms worse. Keep track of how your symptoms change.",
+
+          warning:
+            "Seek medical attention if symptoms are severe, rapidly worsening, persistent, or associated with breathing difficulty, fainting, confusion, severe pain, or other emergency warning signs.",
+
+          highRisk: false,
+
+          symptomTag: "your symptoms",
+
+          showAppointmentCTA: true,
+        };
+      }
+
+      /* =========================================================
+   APPOINTMENT
+   ========================================================= */
+
+      function bookAppointment(symptom) {
+        const modal = document.getElementById("appointment-modal");
+
+        const message = document.getElementById("appointment-message");
+
+        message.textContent =
+          "The chatbot recommends discussing " +
+          symptom +
+          " with a healthcare professional. " +
+          "Please contact Nalam Clinic to arrange a consultation.";
+
+        modal.classList.add("active");
+      }
+
+      function closeAppointmentModal() {
+        const modal = document.getElementById("appointment-modal");
+
+        modal.classList.remove("active");
+      }
+
+      /* =========================================================
+   CLOSE APPOINTMENT WHEN CLICKING OUTSIDE
+   ========================================================= */
+
+      document
+        .getElementById("appointment-modal")
+        .addEventListener("click", function (event) {
+          if (event.target === this) {
+            closeAppointmentModal();
+          }
+        });
+
+      /* =========================================================
+   ESC KEY
+   ========================================================= */
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeNalamChatbot();
+
+          closeAppointmentModal();
+        }
+      });
+    </script>
+  </body>
+</html>

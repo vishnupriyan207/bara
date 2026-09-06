@@ -1445,6 +1445,31 @@
 
           renderCurrentSessionMessages();
         }
+
+        syncSessionsWithBackend();
+      }
+
+      async function syncSessionsWithBackend() {
+        if (!window.NalamAPI || !window.NalamAPI.getChatSessions) return;
+        try {
+          const dbIds = chatHistory.map(function(s) { return s.dbId; }).filter(Boolean);
+          const remoteSessions = await window.NalamAPI.getChatSessions(dbIds);
+          if (remoteSessions && remoteSessions.length > 0) {
+            remoteSessions.forEach(function(rs) {
+              const local = chatHistory.find(function(s) { return s.dbId === rs._id || s.id === rs._id; });
+              if (local) {
+                if (rs.title && (!local.title || local.title === "New Medical Consultation")) {
+                  local.title = rs.title;
+                }
+                local.dbId = rs._id;
+              }
+            });
+            saveChatHistoryToStorage();
+            renderHistoryDrawerList();
+          }
+        } catch (e) {
+          console.log("Database sync note:", e.message);
+        }
       }
 
       /* =========================================================
@@ -1589,6 +1614,16 @@
 
       function deleteHistorySession(event, sessionId) {
         event.stopPropagation();
+
+        const target = chatHistory.find(function (session) {
+          return session.id === sessionId;
+        });
+
+        if (target && target.dbId && window.NalamAPI && window.NalamAPI.deleteChatSession) {
+          window.NalamAPI.deleteChatSession(target.dbId).catch(function (err) {
+            console.warn("Could not delete session from database:", err.message);
+          });
+        }
 
         chatHistory = chatHistory.filter(function (session) {
           return session.id !== sessionId;
@@ -2052,6 +2087,7 @@
           const response = await generateMedicalResponse(
             text,
             session.messages,
+            session
           );
 
           removeTypingIndicator();
@@ -2075,6 +2111,10 @@
           removeTypingIndicator();
 
           const fallback = generateFallbackResponse(text, session.messages);
+
+          if (error && (error.message.includes("Failed to fetch") || error.message.includes("NetworkError") || error.message.includes("405") || error.message.includes("ECONNREFUSED"))) {
+            fallback.warning = (fallback.warning ? fallback.warning + " | " : "") + "Note: Nalam backend API (port 5000) is offline. Start the backend with 'npm start' in nalam-backend to sync chats to MongoDB Atlas.";
+          }
 
           session.messages.push({
             sender: "bot",
@@ -2174,7 +2214,7 @@
    GROQ MEDICAL AI
    ========================================================= */
 
-      async function generateMedicalResponse(userQuery, messageHistory) {
+      async function generateMedicalResponse(userQuery, messageHistory, currentSession) {
         const text = userQuery.trim();
 
         const normalized = text.toLowerCase();
@@ -2232,7 +2272,11 @@
           let assistantContent = message.content;
 
           if (typeof assistantContent !== "string") {
-            assistantContent = JSON.stringify(assistantContent);
+            if (assistantContent && assistantContent.guidance) {
+              assistantContent = assistantContent.guidance;
+            } else {
+              assistantContent = JSON.stringify(assistantContent);
+            }
           }
 
           return {
@@ -2244,40 +2288,47 @@
 
         /*
      =====================================================
-     CALL YOUR SERVER
+     CALL NALAM BACKEND REST API
      =====================================================
     */
 
-        console.log("Sending request to /api/chat...");
+        const activeDbId = currentSession ? (currentSession.dbId || null) : null;
+        console.log("Sending request to /api/chat... Active Session DB ID:", activeDbId);
 
-        const response = await fetch("/api/chat", {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            messages: messages,
-          }),
-        });
-
-        /*
-     =====================================================
-     CHECK SERVER RESPONSE
-     =====================================================
-    */
-
-        const data = await response.json();
+        let data;
+        if (window.NalamAPI && window.NalamAPI.sendLegacyChatMessage) {
+          data = await window.NalamAPI.sendLegacyChatMessage(messages, activeDbId);
+        } else {
+          const host = (window.location.hostname || "localhost");
+          const baseUrl = window.location.port === "5000" ? "/api" : `http://${host}:5000/api`;
+          const response = await fetch(`${baseUrl}/chat`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              messages: messages,
+              sessionId: activeDbId || undefined,
+            }),
+          });
+          data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data?.error?.message || data?.error || `HTTP ${response.status} Request Failed`);
+          }
+        }
 
         console.log("API response:", data);
 
-        if (!response.ok) {
-          throw new Error(data?.error || "API request failed");
+        // Store returned MongoDB ChatSession _id
+        const returnedSessionId = data?.sessionId || data?.data?.sessionId;
+        if (currentSession && returnedSessionId) {
+          currentSession.dbId = returnedSessionId;
+          saveChatHistoryToStorage();
         }
 
-        if (!data.response) {
-          throw new Error("No response received from Groq");
+        const replyContent = data?.response || data?.data?.response;
+        if (!replyContent) {
+          throw new Error("No response received from Nalam AI service");
         }
 
         /*
@@ -2291,7 +2342,7 @@
 
           questions: [],
 
-          guidance: data.response,
+          guidance: replyContent,
 
           warning: "",
 

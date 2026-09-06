@@ -11,7 +11,7 @@ const {
 } = require('../validators/chatValidator');
 
 // Backward compatibility endpoint for original frontend
-router.post('/', chatLimiter, validateBody(legacyChatSchema), chatController.legacyChat);
+router.post('/', chatLimiter, optionalAuthenticate, validateBody(legacyChatSchema), chatController.legacyChat);
 
 // Session endpoints
 router.post('/sessions', optionalAuthenticate, validateBody(createChatSessionSchema), chatController.createSession);

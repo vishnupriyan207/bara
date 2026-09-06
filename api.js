@@ -4,8 +4,23 @@
  * Provides unified state handling, JWT authorization, and server-side computation.
  */
 
+function resolveApiBaseUrl() {
+  if (typeof window !== 'undefined' && window.location) {
+    // If running on backend server itself (port 5000)
+    if (window.location.port === '5000') {
+      return '/api';
+    }
+    // If running on a static server like Live Server (e.g. port 8080, 5500, 3000)
+    const hostname = window.location.hostname || 'localhost';
+    return `http://${hostname}:5000/api`;
+  }
+  return 'http://localhost:5000/api';
+}
+
 const NALAM_API_CONFIG = {
-  BASE_URL: 'http://localhost:5000/api',
+  get BASE_URL() {
+    return resolveApiBaseUrl();
+  },
   TOKEN_KEY: 'nalam_auth_token',
   USER_KEY: 'nalam_auth_user'
 };
@@ -210,8 +225,9 @@ async function createPrescription(prescriptionData) {
 }
 
 // --- CHATBOT APIS ---
-async function getChatSessions() {
-  const res = await apiRequest('/chat/sessions');
+async function getChatSessions(sessionIds = []) {
+  const query = sessionIds && sessionIds.length > 0 ? `?ids=${sessionIds.join(',')}` : '';
+  const res = await apiRequest(`/chat/sessions${query}`);
   return res.data?.sessions || [];
 }
 
@@ -243,13 +259,17 @@ async function deleteChatSession(sessionId) {
   return res.data;
 }
 
-// Legacy backward-compatible chat helper
-async function sendLegacyChatMessage(messages) {
+// Legacy backward-compatible chat helper with sessionId support
+async function sendLegacyChatMessage(messages, sessionId = null) {
+  const payload = { messages };
+  if (sessionId) {
+    payload.sessionId = sessionId;
+  }
   const res = await apiRequest('/chat', {
     method: 'POST',
-    body: { messages }
+    body: payload
   });
-  return res.response;
+  return res;
 }
 
 // --- PHARMACY MEDICINES & INVENTORY ---

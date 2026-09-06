@@ -15,49 +15,86 @@ const legacyChat = async (req, res, next) => {
     const result = await getGroqChatCompletion(messages);
 
     // Persist chat session and messages to MongoDB Atlas
+    let session = null;
     try {
-      let session = null;
+      let patientId = null;
+      let userId = req.user ? req.user._id : null;
+
+      if (req.user && req.user.role === 'patient') {
+        const patient = await Patient.findOne({ userId: req.user._id });
+        if (patient) {
+          patientId = patient._id;
+        }
+      }
+
+      // Check if session exists in MongoDB
       if (sessionId && mongoose.Types.ObjectId.isValid(sessionId)) {
         session = await ChatSession.findById(sessionId);
       }
-      if (!session) {
-        const lastUserMsg = messages && messages.length > 0 ? messages[messages.length - 1].content : '';
-        const titleSnippet = lastUserMsg ? lastUserMsg.slice(0, 40) + '...' : 'New Medical Consultation';
+
+      const lastUserMsg = messages && messages.length > 0 ? messages[messages.length - 1] : null;
+      const userText = lastUserMsg ? String(lastUserMsg.content || '') : '';
+      const titleSnippet = userText ? (userText.slice(0, 40) + (userText.length > 40 ? '...' : '')) : 'New Medical Consultation';
+
+      if (!session || session.status === 'deleted') {
         session = await ChatSession.create({
+          patientId,
+          userId,
           title: titleSnippet,
           status: 'active'
         });
+      } else {
+        // Link authenticated user if session was started anonymously
+        let modified = false;
+        if (!session.userId && userId) {
+          session.userId = userId;
+          modified = true;
+        }
+        if (!session.patientId && patientId) {
+          session.patientId = patientId;
+          modified = true;
+        }
+        if (session.title === 'New Medical Consultation' && titleSnippet !== 'New Medical Consultation') {
+          session.title = titleSnippet;
+          modified = true;
+        }
+        session.updatedAt = new Date();
+        await session.save();
       }
 
       // Save user prompt
-      if (messages && messages.length > 0) {
-        const lastUserMsg = messages[messages.length - 1];
-        if (lastUserMsg.role === 'user') {
-          await ChatMessage.create({
-            sessionId: session._id,
-            role: 'user',
-            content: lastUserMsg.content,
-            model: 'openai/gpt-oss-20b'
-          });
-        }
+      if (lastUserMsg && lastUserMsg.role === 'user') {
+        await ChatMessage.create({
+          sessionId: session._id,
+          patientId: session.patientId || patientId,
+          role: 'user',
+          content: userText,
+          model: 'openai/gpt-oss-20b'
+        });
       }
 
       // Save assistant response
       if (result && result.content) {
         await ChatMessage.create({
           sessionId: session._id,
+          patientId: session.patientId || patientId,
           role: 'assistant',
           content: result.content,
-          model: 'openai/gpt-oss-20b'
+          model: result.model || 'openai/gpt-oss-20b'
         });
       }
     } catch (dbErr) {
-      console.warn('[ChatController] Notice persisting chat to DB:', dbErr.message);
+      console.error('[ChatController] Error persisting chat to MongoDB:', dbErr);
     }
 
     res.status(200).json({
       success: true,
-      response: result.content
+      response: result.content,
+      sessionId: session ? session._id.toString() : null,
+      data: {
+        sessionId: session ? session._id.toString() : null,
+        response: result.content
+      }
     });
   } catch (error) {
     next(error);
@@ -128,6 +165,9 @@ const getSessions = async (req, res, next) => {
       } else {
         query.userId = req.user._id;
       }
+    } else if (req.query.ids) {
+      const idList = req.query.ids.split(',').map(s => s.trim()).filter(id => mongoose.Types.ObjectId.isValid(id));
+      query._id = { $in: idList };
     }
 
     const sessions = await ChatSession.find(query).sort({ updatedAt: -1 });

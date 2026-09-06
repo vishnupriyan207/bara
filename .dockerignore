@@ -1,0 +1,7 @@
+node_modules
+nalam-backend/node_modules
+.env
+nalam-backend/.env
+.git
+.gitignore
+.DS_Store

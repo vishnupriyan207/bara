@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: nalam-backend
+    env: docker
+    dockerfilePath: ./nalam-backend/Dockerfile
+    dockerContext: ./nalam-backend
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: FRONTEND_URL
+        sync: false

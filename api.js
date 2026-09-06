@@ -6,13 +6,29 @@
 
 function resolveApiBaseUrl() {
   if (typeof window !== 'undefined' && window.location) {
-    // If running on backend server itself (port 5000)
+    // 1. Explicit window or localStorage override (e.g. Render backend URL)
+    if (window.NALAM_API_BASE_URL) {
+      return window.NALAM_API_BASE_URL.replace(/\/+$/, '');
+    }
+    const stored = localStorage.getItem('nalam_api_base_url');
+    if (stored) {
+      return stored.replace(/\/+$/, '');
+    }
+
+    // 2. If running directly on backend server (port 5000)
     if (window.location.port === '5000') {
       return '/api';
     }
-    // If running on a static server like Live Server (e.g. port 8080, 5500, 3000)
+
+    // 3. If running locally via Live Server or local dev port (8080, 5500, 3000, etc.)
     const hostname = window.location.hostname || 'localhost';
-    return `http://${hostname}:5000/api`;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return `http://${hostname}:5000/api`;
+    }
+
+    // 4. Production deployment (Vercel / Cloud):
+    // Use relative '/api' if Vercel rewrites proxy to Render, or fallback to relative path
+    return '/api';
   }
   return 'http://localhost:5000/api';
 }

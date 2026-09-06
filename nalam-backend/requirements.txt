@@ -1,0 +1,20 @@
+# ========================================================
+# NALAM CLINIC BACKEND DEPENDENCY MANIFEST
+# ========================================================
+# NOTE: This backend is built with Node.js & Express.
+# Its active production dependencies are managed via `package.json`.
+# When deploying to Render or Docker, npm reads package.json:
+#   npm install / npm ci --only=production
+#
+# Primary Dependencies:
+# - express >= 4.21.2
+# - mongoose >= 8.9.5
+# - cors >= 2.8.5
+# - helmet >= 8.0.0
+# - jsonwebtoken >= 9.0.2
+# - bcryptjs >= 2.4.3
+# - dotenv >= 16.4.7
+# - express-rate-limit >= 7.5.0
+# - morgan >= 1.10.0
+# - zod >= 3.24.1
+# ========================================================

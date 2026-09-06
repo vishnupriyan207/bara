@@ -19567,6 +19567,7 @@
       }
     ];
   </script>
+  <script src="api.js"></script>
   <script>
     const { jsPDF } = window.jspdf;
 
@@ -19781,22 +19782,74 @@
     // --- SETUP EVENT LISTENERS ON LOAD ---
     // Moving these assignments inside a block that runs after parsing or ensuring elements exist
 
+    async function loadPharmacyDataFromDB() {
+      if (!window.NalamAPI) return;
+      try {
+        const [salesData, billsList] = await Promise.all([
+          NalamAPI.getTodayBills().catch(() => null),
+          NalamAPI.getBills().catch(() => [])
+        ]);
+
+        if (Array.isArray(billsList) && billsList.length > 0) {
+          transactions = billsList.map((b) => ({
+            id: b.billNumber || b._id,
+            date: b.createdAt ? new Date(b.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+            time: b.createdAt ? new Date(b.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "12:00 PM",
+            status: b.paymentStatus === 'paid' ? 'Paid' : b.paymentStatus,
+            items: (b.items || []).map((i) => ({
+              name: i.name,
+              qty: `${i.quantity} strip`,
+              total: i.total
+            })),
+            grand: b.grandTotal,
+            total: b.grandTotal,
+            method: b.paymentMethod || 'cash'
+          }));
+        }
+
+        if (salesData && salesData.totalSales !== undefined) {
+          todaysSales = salesData.totalSales;
+          const dashSalesEl = document.getElementById('dash-sales');
+          if (dashSalesEl) dashSalesEl.textContent = `₹${todaysSales.toFixed(2)}`;
+          const dashBillsEl = document.getElementById('dash-bills');
+          if (dashBillsEl) dashBillsEl.textContent = salesData.count || transactions.length;
+        }
+      } catch (e) {
+        console.warn("Could not sync pharmacy with MongoDB:", e.message);
+      }
+    }
+
     window.onload = function () {
       const btnLogin = document.getElementById('btn-login');
       if (btnLogin) {
-        btnLogin.onclick = () => {
+        btnLogin.onclick = async () => {
           const passEl = document.getElementById('login-pass');
           const errEl = document.getElementById('login-error');
           if (!passEl) return;
           const pass = passEl.value.trim();
-          if (pass === "2121") {
+          let authOk = false;
+          if (window.NalamAPI) {
+            try {
+              await NalamAPI.login('pharmacy@nalamclinic.com', pass === '2121' ? 'PharmacyPassword@123' : pass);
+              authOk = true;
+            } catch (err) {
+              if (pass === "2121") authOk = true;
+            }
+          } else if (pass === "2121") {
+            authOk = true;
+          }
+
+          if (authOk) {
             if (errEl) errEl.classList.add('hidden');
             navTo('page-main');
+            loadPharmacyDataFromDB();
           } else {
             if (errEl) errEl.classList.remove('hidden');
           }
         };
       }
+
+      loadPharmacyDataFromDB();
 
       const billTime = document.getElementById('bill-time');
       if (billTime) {
@@ -20356,17 +20409,17 @@
     // Removed slow transitionstart listener, will call manually on navigation
     // document.getElementById('page-checkout').addEventListener('transitionstart', navCheckoutTotals);
 
-    function openPaymentModal() {
+    async function openPaymentModal() {
       if (cart.length === 0) return;
 
       // Calculate Bill Details
       const totalAmount = parseFloat(document.getElementById('checkout-total').textContent) || 0;
-      const billId = document.getElementById('checkout-order').textContent.replace('#', '');
+      let billId = document.getElementById('checkout-order').textContent.replace('#', '');
 
-      // Create New Bill Record
+      // Create New Bill Record in UI
       const newBill = {
         id: billId,
-        date: new Date().toLocaleDateString(), // Fixed: Use simple date string to match filters
+        date: new Date().toLocaleDateString(),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         status: "Paid",
         items: cart.map(i => ({
@@ -20378,6 +20431,39 @@
         total: totalAmount
       };
 
+      // Send to Backend MongoDB Atlas API
+      if (window.NalamAPI) {
+        try {
+          const dbMeds = await NalamAPI.getMedicines();
+          const itemsPayload = cart.map(c => {
+            const matched = (dbMeds || []).find(m => m.name.toLowerCase() === c.name.toLowerCase()) || dbMeds[0];
+            return {
+              medicineId: matched?._id || "6a9d45603b437f8ea069f932",
+              quantity: c.qty || 1,
+              mode: c.mode === 'tablet' ? 'tablet' : 'strip'
+            };
+          });
+
+          const created = await NalamAPI.createBill({
+            items: itemsPayload,
+            customerName: 'Walk-in Customer',
+            paymentMethod: 'cash'
+          });
+
+          if (created && created.bill) {
+            billId = created.bill.billNumber;
+            newBill.id = billId;
+            newBill.grand = created.bill.grandTotal;
+            newBill.total = created.bill.grandTotal;
+            document.getElementById('success-amount').textContent = "₹" + created.bill.grandTotal.toFixed(2);
+            document.getElementById('success-bill-id').textContent = "#" + billId;
+            console.log("Pharmacy bill recorded in MongoDB Atlas:", billId);
+          }
+        } catch (err) {
+          console.error("Backend billing error:", err);
+        }
+      }
+
       // Add to History & Update Dashboard
       transactions.unshift(newBill);
       updateDashboard();
@@ -20387,8 +20473,10 @@
       document.getElementById('cart-count').textContent = "0";
 
       // Show Success Page
-      document.getElementById('success-amount').textContent = "₹" + totalAmount.toFixed(2);
-      document.getElementById('success-bill-id').textContent = "#" + billId;
+      if (!window.NalamAPI) {
+        document.getElementById('success-amount').textContent = "₹" + totalAmount.toFixed(2);
+        document.getElementById('success-bill-id').textContent = "#" + billId;
+      }
       navTo('page-payment-success');
     }
 

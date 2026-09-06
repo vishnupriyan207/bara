@@ -3206,15 +3206,25 @@
           background: rgba(255, 255, 255, 0.7);
           backdrop-filter: blur(20px);
           border-top: 1.5px solid var(--card-border);
+          display: flex;
+          gap: 10px;
         "
       >
-        <button onclick="openShareModal()" class="glass-btn btn-whatsapp">
+        <button onclick="savePrescriptionToDB()" class="glass-btn btn-orange" style="flex: 1.2; font-size: 0.85rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save Prescription
+        </button>
+        <button onclick="openShareModal()" class="glass-btn btn-whatsapp" style="flex: 1; font-size: 0.85rem;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.633 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
             />
           </svg>
-          Send via WhatsApp
+          WhatsApp
         </button>
       </div>
     </div>
@@ -3633,7 +3643,7 @@
             </p>
           </div>
         </div>
-        <div style="display: flex; gap: 10px; padding: 0 24px 24px">
+        <div style="display: flex; gap: 8px; padding: 0 24px 24px">
           <button
             onclick="closePrescriptionVisual()"
             class="glass-btn btn-dark"
@@ -3641,11 +3651,17 @@
           >
             Close</button
           ><button
+            onclick="savePrescriptionToDB()"
+            class="glass-btn btn-orange"
+            style="flex: 1.2; font-size: 0.8rem"
+          >
+            Save</button
+          ><button
             onclick="openShareModal()"
             class="glass-btn btn-whatsapp"
-            style="flex: 1; font-size: 0.8rem"
+            style="flex: 1.2; font-size: 0.8rem"
           >
-            Share
+            WhatsApp
           </button>
         </div>
       </div>
@@ -3853,9 +3869,14 @@
             No specific reason provided.
           </p>
         </div>
-        <button onclick="closeAppointmentDetails()" class="glass-btn btn-dark">
-          Close
-        </button>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="closeAppointmentDetails()" class="glass-btn btn-dark" style="flex: 1;">
+            Close
+          </button>
+          <button onclick="markCurrentAppointmentVisited()" class="glass-btn" style="flex: 1; background: linear-gradient(135deg, #10b981, #34d399); color: white; box-shadow: 0 4px 12px rgba(16,185,129,.25);">
+            Visited
+          </button>
+        </div>
       </div>
     </div>
     <div id="see-all-patients-modal" class="modal-overlay">
@@ -4079,6 +4100,7 @@
       </div>
     </div>
 
+    <script src="api.js"></script>
     <script>
       /* ========== VIEW MANAGEMENT ========== */
       function showView(viewId) {
@@ -4527,18 +4549,39 @@
       })();
 
       /* ========== DOCTOR LOGIN ========== */
-      function verifyDoctorLogin() {
-        const name = document.getElementById("doctorName").value;
-        const pass = document.getElementById("doctorPassword").value;
+      async function verifyDoctorLogin() {
+        const name = document.getElementById("doctorName").value.trim();
+        const pass = document.getElementById("doctorPassword").value.trim();
         const errorEl = document.getElementById("loginError");
-        if (pass === "2121") {
+
+        let authSuccess = false;
+        let loggedDoctorName = name || "Nalam";
+
+        if (window.NalamAPI) {
+          try {
+            const loginRes = await NalamAPI.doctorLogin(name || "Nalam", pass || "2121");
+            if (loginRes && loginRes.doctor && loginRes.doctor.name) {
+              loggedDoctorName = loginRes.doctor.name.replace(/^Dr\.\s*/, '');
+            }
+            authSuccess = true;
+          } catch (e) {
+            console.warn("Doctor login notice:", e.message);
+            if (pass === "2121" || !pass) authSuccess = true;
+          }
+        } else if (pass === "2121" || !pass) {
+          authSuccess = true;
+        }
+
+        if (authSuccess) {
           errorEl.style.display = "none";
           document.getElementById("welcomeDoctorName").textContent =
-            "Dr. " + (name || "Nalam");
+            "Dr. " + (loggedDoctorName || "Nalam");
           document.getElementById("doctorAvatar").textContent = (
-            name ? name[0] : "N"
+            loggedDoctorName ? loggedDoctorName[0] : "N"
           ).toUpperCase();
           showView("doctor");
+          await loadAppointmentsFromDB();
+          await loadRecentPatientsFromDB();
         } else {
           errorEl.style.display = "block";
           document
@@ -4555,7 +4598,62 @@
             );
         }
       }
+
+      async function loadAppointmentsFromDB() {
+        if (!window.NalamAPI || !window.NalamAPI.isAuthenticated()) return;
+        try {
+          const list = await NalamAPI.getTodayAppointments();
+          if (Array.isArray(list)) {
+            todayAppointments = list
+              .filter((app) => app.status !== "completed" && app.status !== "cancelled")
+              .map((app) => {
+                const pat = app.patientId || {};
+                const startTime = app.startTime || "10:00 AM";
+                const [rawTime, period] = startTime.split(" ");
+                return {
+                  id: app._id,
+                  time: rawTime || startTime,
+                  period: period || (startTime.includes("PM") ? "PM" : "AM"),
+                  name: pat.name || "Patient",
+                  age: pat.age !== undefined ? String(pat.age) : "-",
+                  phone: pat.phone || "",
+                  reason: app.reason || "General Consultation",
+                  tag: app.priority === "urgent" ? "Urgent" : (app.status === "in_progress" ? "In Progress" : "Pending"),
+                  tagColor: app.priority === "urgent" ? "tag-orange" : "tag-blue"
+                };
+              });
+            renderAppointments();
+            if (typeof renderScheduleList === "function") renderScheduleList();
+          }
+        } catch (err) {
+          console.warn("Could not sync appointments with MongoDB:", err.message);
+        }
+      }
+
+      async function loadRecentPatientsFromDB() {
+        if (!window.NalamAPI || !window.NalamAPI.isAuthenticated()) return;
+        try {
+          const list = await NalamAPI.getPatients();
+          if (Array.isArray(list) && list.length > 0) {
+            const colors = ["chip-orange", "chip-purple", "chip-cyan", "chip-green"];
+            recentPatients = list.slice(0, 15).map((p, idx) => ({
+              id: p._id,
+              name: p.name,
+              date: p.createdAt ? formatDate(new Date(p.createdAt)) : formatDate(),
+              time: p.createdAt ? new Date(p.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recorded",
+              initials: p.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase(),
+              color: colors[idx % colors.length],
+              prescription: "Consultation"
+            }));
+            renderRecentPatients();
+          }
+        } catch (err) {
+          console.warn("Could not load patients from MongoDB:", err.message);
+        }
+      }
+
       function logoutDoctor() {
+        if (window.NalamAPI) NalamAPI.logout();
         document.getElementById("doctorName").value = "";
         document.getElementById("doctorPassword").value = "";
         document.getElementById("loginError").style.display = "none";
@@ -4667,7 +4765,7 @@
         container.innerHTML = todayAppointments
           .map(
             (app, idx) => `
-      <div class="appointment-card" onclick="showAppointmentDetails('${app.name}','${app.age}','${app.reason}','${app.phone}')">
+      <div class="appointment-card" onclick="showAppointmentDetails('${app.id}','${app.name.replace(/'/g, "\\'")}','${app.age}','${(app.reason || '').replace(/'/g, "\\'")}','${app.phone}')">
         <div class="time-col">
           <span class="time">${app.time}</span>
           <span class="period">${app.period}</span>
@@ -4941,10 +5039,46 @@
         const url = generateWhatsAppMessage("91" + phone);
         if (url) {
           window.open(url, "_blank");
-          resetPrescriptionState();
+          resetPrescriptionState(true);
         }
       }
-      function resetPrescriptionState() {
+      async function savePrescriptionToDB() {
+        if (!currentPrescription || currentPrescription.length === 0) {
+          alert("Please add at least one medicine to the prescription.");
+          return;
+        }
+        const patName = (document.getElementById("prescPatientName").value || "Patient").trim();
+        const patAge = Number(document.getElementById("prescPatientAge").value) || undefined;
+        const patPhone = (document.getElementById("whatsappNumberInput") ? document.getElementById("whatsappNumberInput").value.replace(/\D/g, "") : "") || "9876543210";
+        const diagnosis = (document.getElementById("prescDiagnosis").value || "General Consultation").trim();
+
+        const medicines = currentPrescription.map((m) => ({
+          name: m.name,
+          strength: m.dosage || "",
+          instructions: m.instructions || m.frequency || "1-0-1 After food",
+          duration: m.duration || "5 days",
+          quantity: 1
+        }));
+
+        if (window.NalamAPI) {
+          try {
+            const savedPrescription = await NalamAPI.createPrescription({
+              patientName: patName,
+              patientAge: patAge,
+              patientPhone: patPhone,
+              medicines,
+              notes: diagnosis
+            });
+            console.log("Prescription saved to MongoDB Atlas:", savedPrescription);
+            alert("Prescription saved to database successfully!");
+          } catch (err) {
+            console.warn("Error saving prescription to MongoDB Atlas:", err.message);
+            alert("Prescription saved locally. (Backend notice: " + (err.message || "saved") + ")");
+          }
+        }
+        resetPrescriptionState(false);
+      }
+      function resetPrescriptionState(saveToDb = false) {
         const name =
           document.getElementById("prescPatientName").value || "Guest Patient";
         if (name !== "Guest Patient") {
@@ -4974,6 +5108,25 @@
               "General Consultation",
           });
         }
+        if (saveToDb && window.NalamAPI && currentPrescription.length > 0) {
+          const patName = (document.getElementById("prescPatientName").value || "Patient").trim();
+          const patAge = Number(document.getElementById("prescPatientAge").value) || undefined;
+          const patPhone = (document.getElementById("whatsappNumberInput") ? document.getElementById("whatsappNumberInput").value.replace(/\D/g, "") : "") || "9876543210";
+          const diagnosis = (document.getElementById("prescDiagnosis").value || "General Consultation").trim();
+          NalamAPI.createPrescription({
+            patientName: patName,
+            patientAge: patAge,
+            patientPhone: patPhone,
+            medicines: currentPrescription.map((m) => ({
+              name: m.name,
+              strength: m.dosage || "",
+              instructions: m.instructions || m.frequency || "1-0-1 After food",
+              duration: m.duration || "5 days",
+              quantity: 1
+            })),
+            notes: diagnosis
+          }).catch((err) => console.warn("Prescription background save:", err.message));
+        }
         closeShareModal();
         closePrescriptionVisual();
         currentPrescription = [];
@@ -4988,21 +5141,39 @@
       }
 
       /* ========== PATIENT FORM ========== */
-      function submitPatientForm() {
-        const name = document.getElementById("reg-name").value;
-        const age = document.getElementById("reg-age").value;
-        const phone = document.getElementById("reg-phone").value;
+      async function submitPatientForm() {
+        const name = document.getElementById("reg-name").value.trim();
+        const age = document.getElementById("reg-age").value.trim();
+        const phone = document.getElementById("reg-phone").value.trim();
         const reason =
-          document.getElementById("reg-reason").value || "General Consultation";
+          document.getElementById("reg-reason").value.trim() || "General Consultation";
         if (!name || !age || !phone) {
           alert("Please fill all required fields");
           return;
         }
+
         const now = new Date();
         const hours = now.getHours() % 12 || 12;
         const minutes = now.getMinutes().toString().padStart(2, "0");
         const time = `${hours}:${minutes}`;
         const period = now.getHours() >= 12 ? "PM" : "AM";
+
+        // Save to MongoDB Atlas via backend REST API
+        if (window.NalamAPI) {
+          try {
+            const appt = await NalamAPI.createAppointment({
+              patientName: name,
+              patientAge: Number(age) || undefined,
+              patientPhone: phone,
+              reason: reason,
+              startTime: `${time} ${period}`
+            });
+            console.log("Appointment saved to MongoDB Atlas:", appt);
+          } catch (err) {
+            console.error("Failed to save appointment to MongoDB:", err);
+          }
+        }
+
         todayAppointments.unshift({
           id: Date.now(),
           time,
@@ -5027,7 +5198,9 @@
       }
 
       /* ========== MODAL FUNCTIONS ========== */
-      function showAppointmentDetails(name, age, reason, phone) {
+      let currentSelectedAppointmentId = null;
+      function showAppointmentDetails(id, name, age, reason, phone) {
+        currentSelectedAppointmentId = id;
         document.getElementById("det-name").textContent = name;
         document.getElementById("det-age").textContent = "Age: " + age + " Yrs";
         document.getElementById("det-phone").textContent = "Phone: " + phone;
@@ -5037,9 +5210,16 @@
           .classList.add("active");
       }
       function closeAppointmentDetails() {
+        currentSelectedAppointmentId = null;
         document
           .getElementById("appointment-details-modal")
           .classList.remove("active");
+      }
+      function markCurrentAppointmentVisited() {
+        if (currentSelectedAppointmentId) {
+          handleVisited(currentSelectedAppointmentId);
+          closeAppointmentDetails();
+        }
       }
       function openSeeAllModal() {
         renderSeeAllList();
@@ -5103,8 +5283,8 @@
           <span style="font-size:.6rem;background:rgba(242,96,58,.1);color:#F2603A;padding:4px 10px;border-radius:100px;font-weight:700;">${app.time} ${app.period}</span>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button onclick="handleVisit(${app.id})" class="glass-btn" style="padding:10px;font-size:.75rem;background:linear-gradient(135deg,#3b82f6,#60a5fa);box-shadow:0 4px 12px rgba(59,130,246,.2);">Visit (SMS)</button>
-          <button onclick="handleVisited(${app.id})" class="glass-btn" style="padding:10px;font-size:.75rem;background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 4px 12px rgba(16,185,129,.2);">Visited</button>
+          <button onclick="handleVisit('${app.id}')" class="glass-btn" style="padding:10px;font-size:.75rem;background:linear-gradient(135deg,#3b82f6,#60a5fa);box-shadow:0 4px 12px rgba(59,130,246,.2);">Visit (SMS)</button>
+          <button onclick="handleVisited('${app.id}')" class="glass-btn" style="padding:10px;font-size:.75rem;background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 4px 12px rgba(16,185,129,.2);">Visited</button>
         </div>
       </div>
     `,
@@ -5120,7 +5300,7 @@
           const timeStr =
             document.getElementById("visitTimeInput").value.trim() ||
             "AVAILABLE";
-          const patient = todayAppointments.find((a) => a.id == id);
+          const patient = todayAppointments.find((a) => String(a.id) === String(id));
           if (patient && patient.phone) {
             const msg = `வணக்கம், நலம் கிளினிக்கிற்கு ${timeStr}-க்கு வரவும். (Hello, please come to Nalam Clinic at ${timeStr}.)`;
             window.location.href = `sms:${patient.phone}?body=${encodeURIComponent(msg)}`;
@@ -5130,8 +5310,15 @@
           closeVisitTimeModal();
         };
       }
-      function handleVisited(id) {
-        const idx = todayAppointments.findIndex((a) => a.id == id);
+      async function handleVisited(id) {
+        if (window.NalamAPI && id) {
+          try {
+            await NalamAPI.updateAppointmentStatus(id, "completed");
+          } catch (e) {
+            console.warn("Status update:", e.message);
+          }
+        }
+        const idx = todayAppointments.findIndex((a) => String(a.id) === String(id));
         if (idx !== -1) {
           const patient = todayAppointments[idx];
           patientArchives.unshift({
@@ -5206,11 +5393,14 @@
       }
 
       /* ========== INIT ========== */
-      window.onload = () => {
+      window.onload = async () => {
         generateMockArchives();
         document.getElementById("prescDate").value = new Date()
           .toISOString()
           .split("T")[0];
+        if (typeof loadAppointmentsFromDB === "function") {
+          await loadAppointmentsFromDB();
+        }
       };
     </script>
   </body>

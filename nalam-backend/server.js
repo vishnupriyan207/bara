@@ -33,15 +33,24 @@ app.use(helmet({
 }));
 
 // CORS Configuration
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5000',
+  'https://nalam-frontend.vercel.app'
+];
+const envOrigins = (process.env.FRONTEND_URL || '')
   .split(',')
-  .map(o => o.trim());
+  .map(o => o.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    const normalizedOrigin = origin.replace(/\/+$/, '');
+    if (allowedOrigins.indexOf(normalizedOrigin) !== -1 || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
       return callback(null, true);
     }
     return callback(new Error(`CORS policy blocked access from origin ${origin}`), false);
@@ -86,6 +95,7 @@ app.use('/api/medicines', medicineRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/bills', billRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/reports', reportRoutes);
 // Static Frontend Serving (serves index.html, chatbot.html, pharmacy.html, api.js)
 const path = require('path');
 app.use(express.static(path.join(__dirname, '..')));

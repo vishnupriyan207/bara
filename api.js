@@ -26,9 +26,8 @@ function resolveApiBaseUrl() {
       return `http://${hostname}:5000/api`;
     }
 
-    // 4. Production deployment (Vercel / Cloud):
-    // Use relative '/api' if Vercel rewrites proxy to Render, or fallback to relative path
-    return '/api';
+    // 4. Production deployment (Vercel frontend -> Render backend)
+    return 'https://nalam-backend-6ews.onrender.com/api';
   }
   return 'http://localhost:5000/api';
 }
